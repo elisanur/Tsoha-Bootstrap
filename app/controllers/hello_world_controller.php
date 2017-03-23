@@ -11,6 +11,14 @@ class HelloWorldController extends BaseController {
     public static function account() {
         View::make('account.html');
     }
+    
+    public static function editAccount() {
+        View::make('edit_account.html');
+    }
+    
+    public static function editPoster() {
+        View::make('edit_poster.html');
+    }
 
     public static function login() {
         View::make('login.html');

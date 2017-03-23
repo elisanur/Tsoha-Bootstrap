@@ -1,4 +1,37 @@
 {% extends "base.html" %}
 {% block content %}
 
+ <h1>Posters</h1>
+
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Artist</th>
+        <th>Price</th>
+        <th>Location</th>
+        <th>Publisher</th>
+        <th>Height (cm)</th>
+        <th>Width (cm)</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <!-- Listataan pelit tähän -->
+      <tr>
+          <td><p>OOOOOOO</p><p>OOOOOOO</p></td>
+        <td><a href="#">Eye</a></td>
+        <td>Make Makkonen</td>
+        <td>23€</td>
+        <td>Helsinki</td>
+        <td><a href="#">makemies</a></td>
+        <td>50</td>
+        <td>40</td>
+        <th><a class="btn btn-default btn-sm" href="#">Add to shopping bag</a></th>
+      </tr>
+    </tbody>
+  </table>
+
 {% endblock %}
