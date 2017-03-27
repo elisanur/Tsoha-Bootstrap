@@ -14,23 +14,27 @@
         <th>Publisher</th>
         <th>Height (cm)</th>
         <th>Width (cm)</th>
+        <th>Category</th>
         <th></th>
       </tr>
     </thead>
 
     <tbody>
-      <!-- Listataan pelit tähän -->
+        {% for poster in posters %}
+
       <tr>
-          <td><p>OOOOOOO</p><p>OOOOOOO</p></td>
-        <td><a href="#">Eye</a></td>
-        <td>Make Makkonen</td>
-        <td>23€</td>
-        <td>Helsinki</td>
+        <td><p>OOOOOOO</p><p>OOOOOOO</p></td>
+        <td><a href="{{base_path}}/posters/{{poster.name}}">{{poster.name}}</td>
+        <td>{{poster.artist}}</td>
+        <td>{{poster.price}}</td>
+        <td>{{poster.location}}</td>
         <td><a href="#">makemies</a></td>
         <td>50</td>
         <td>40</td>
+        <td></td>
         <th><a class="btn btn-default btn-sm" href="#">Add to shopping bag</a></th>
       </tr>
+      {% endfor %}
     </tbody>
   </table>
 

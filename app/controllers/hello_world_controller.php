@@ -1,5 +1,7 @@
 <?php
 
+require 'app/models/poster.php';
+
 class HelloWorldController extends BaseController {
 
     
