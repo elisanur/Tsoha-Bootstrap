@@ -1,4 +1,4 @@
-CREATE TABLE Username(id SERIAL PRIMARY KEY, 
+CREATE TABLE Username(id SERIAL PRIMARY KEY,
 firstName varchar(50) NOT NULL,
 lastName varchar(50) NOT NULL,
 address varchar(50) NOT NULL,

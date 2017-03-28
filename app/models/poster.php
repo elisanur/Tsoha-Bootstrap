@@ -8,15 +8,15 @@
 
 class Poster extends BaseModel {
 
-    public $id, $name, $publisher, $artist, $price, $location, $heigth, $width,
-            $image, $sold;
+    public $id, $name, $publisherid, $artist, $price, $location, $height, $width,
+            $image, $sold, $publishername;
 
     public function __construct($attributes = null) {
         parent::__construct($attributes);
     }
 
     public static function all() {
-        $query = DB::connection()->prepare('SELECT * FROM Poster');
+        $query = DB::connection()->prepare('SELECT * FROM Poster p, User u WHERE p.publisher=u.id');
         $query->execute();
         $rows = $query->fetchAll();
         $posters = array();
@@ -24,7 +24,7 @@ class Poster extends BaseModel {
         foreach ($rows as $row) {
             $posters[] = new Poster(array(
                 'id' => $row['id'],
-                'name' => $row['name'],
+                'name' => $row['p.name'],
                 'publisher' => $row['publisher'],
                 'artist' => $row['artist'],
                 'price' => $row['price'],
@@ -33,15 +33,16 @@ class Poster extends BaseModel {
                 'width' => $row['width'],
                 'image' => $row['image'],
                 'sold' => $row['sold'],
+                'publishername' => $row['u.name']
             ));
         }
 
         return $posters;
     }
-    
+
     public static function allFromUser($publisher) {
         $query = DB::connection()->prepare('SELECT * FROM Poster WHERE publisher = :publisher');
-        $query->execute();
+        $query->execute(array('publisher' => $publisher));
         $rows = $query->fetchAll();
         $posters = array();
 
@@ -87,5 +88,14 @@ class Poster extends BaseModel {
 
         return null;
     }
+
+    public function save() {
+        $query = DB::connection()->prepare('INSERT INTO Poster (name, publisher, artist, price, location, height, width) VALUES (:name, :publisher, :artist, :price, :location, :height, :width) RETURNING id');
+        $query->execute(array('name' => $this->name, 'publisher' => $this->publisher, 'artist' => $this->artist, 'price' => $this->price, 'location' => $this->location, 'height' => $this->height, 'width' => $this->width));
+        $row = $query->fetch();
+        $this->id = $row['id'];
+    }
+    
+    
 
 }

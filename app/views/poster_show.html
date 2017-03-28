@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>Eye</h1>
+<h1>{{poster.name}}</h1>
 
 <table class="table table-striped table-bordered">
     <thead>
@@ -46,10 +46,10 @@
     <tbody>
         <!-- Listataan pelit tähän -->
         <tr>
-            <td>Make Makkonen</td>
-            <td>23€</td>
-            <td>Helsinki</td>
-            <td><a href="#">makemies</a></td>
+            <td>{{poster.artist}}</td>
+            <td>{{poster.price}}</td>
+            <td>{{poster.location}}</td>
+            <td><a href="{{base_path}}/posters/{{poster.publisher}}">{{poster.publisher}}</a></td>
             <td>50</td>
             <td>40</td>
         </tr>

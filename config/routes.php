@@ -4,30 +4,54 @@ $routes->get('/', function() {
     HelloWorldController::index();
 });
 
-$routes->get('/account', function() {
-    HelloWorldController::account();
-});
-
 $routes->get('/edit_account', function() {
-    HelloWorldController::editAccount();
+    AccountController::editAccount();
 });
 
 $routes->get('/edit_poster', function() {
-    HelloWorldController::editPoster();
+    PosterController::editPoster();
 });
 
 $routes->get('/login', function() {
-    HelloWorldController::login();
+    AccountController::login();
 });
 
-$routes->get('/poster_show', function() {
-    HelloWorldController::posterShow();
+$routes->post('/login', function(){
+  // Kirjautumisen käsittely
+  AccountController::handle_login();
 });
+
+$routes->get('/posters/:id', function($id) {
+    PosterController::posterShow($id);
+});
+
+//$routes->get('/posters/:id', function($id) {
+//    PosterController::show($id);
+//});
 
 $routes->get('/posters', function() {
-    HelloWorldController::posters();
+    PosterController::posters();
 });
 
 $routes->get('/register', function() {
-    HelloWorldController::register();
+    AccountController::register();
 });
+
+$routes->get('/account', function() {
+    AccountController::account();
+});
+
+$routes->get('/account/new_poster', function(){
+    PosterController::create();
+});
+
+$routes->get('/account/:id', function($id) {
+    AccountController::myPosters($id);
+});
+
+$routes->post('/account/new_poster', function(){
+    PosterController::store();
+});
+
+
+

@@ -41,11 +41,26 @@
                         <!--Navigaation linkit -->
                         <li><a href="{{base_path}}/posters">Posters</a></li>
 
+
+                        {% if user_logged_in %}
+
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a href="{{base_path}}/shopping_bag">Shopping bag</a></li>
+                            <li><a href="{{base_path}}/account">My account</a></li>
+                        </ul>
+
+                        {% else %}
+
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="{{base_path}}/register">Register</a></li>
                         <li><a href="{{base_path}}/login">Login</a></li>
                     </ul>
+
+                    {% endif %}
+
+
+
                 </div>
             </div>
         </nav>
