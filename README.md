@@ -11,10 +11,10 @@ Tietokantasovelluksen harjoitustyön aiheena on uniikkeja julisteita myyvä verk
 
 ## Linkkejä sivuilleni
 
-* [Oma tili](http://elisanur.users.cs.helsinki.fi/postershop/account)
+* [Oma tili](http://elisanur.users.cs.helsinki.fi/postershop/account/1) (esim. Make Makkosen oma sivu, jossa julisteen lisäysominaisuus)
 * [Julisteen lisäyssivu](http://elisanur.users.cs.helsinki.fi/postershop/account/new_poster)
 * [Julisteiden listaus](http://elisanur.users.cs.helsinki.fi/postershop/posters)
-* [Julisteen esittelysivu](http://elisanur.users.cs.helsinki.fi/postershop/poster_show)
+* [Julisteen esittelysivu](http://elisanur.users.cs.helsinki.fi/postershop/posters/1)
 * [Oman tilin muokkaussivu](http://elisanur.users.cs.helsinki.fi/postershop/edit_account)
 * [Julisteen muokkaussivu](http://elisanur.users.cs.helsinki.fi/postershop/edit_poster)
 * [Kirjautumissivu](http://elisanur.users.cs.helsinki.fi/postershop/login)
