@@ -1,12 +1,12 @@
-INSERT INTO Username( firstName, lastName, address, postalCode, city, name,
+INSERT INTO Username( firstname, lastname, address, postalcode, city, name,
  password) VALUES ('Make', 'Makkonen', 'Pengerkatu 5 A 5', '00150',
  'Helsinki', 'makemies', 'makeonjees');
 
-INSERT INTO Username( firstName, lastName, address, postalCode, city, name,
+INSERT INTO Username( firstname, lastname, address, postalcode, city, name,
  password) VALUES ('Liisa', 'Laatu', 'Pengerkatu 6 A 8', '00150',
  'Espoo', 'laatunainen', 'laadullaonväliä');
 
-INSERT INTO Username( firstName, lastName, address, postalCode, city, name,
+INSERT INTO Username( firstname, lastname, address, postalcode, city, name,
  password) VALUES ('Make', 'Mikkonen', 'Alkonkatu 4 B 12', '00160',
  'Helsinki', 'mikkonen', 'mikkonen12');
 

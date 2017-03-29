@@ -8,7 +8,7 @@
 
 class Poster extends BaseModel {
 
-    public $id, $name, $publisherid, $artist, $price, $location, $height, $width,
+    public $id, $name, $publisher, $artist, $price, $location, $height, $width,
             $image, $sold, $publishername;
 
     public function __construct($attributes = null) {
@@ -16,7 +16,14 @@ class Poster extends BaseModel {
     }
 
     public static function all() {
-        $query = DB::connection()->prepare('SELECT * FROM Poster p, User u WHERE p.publisher=u.id');
+        $query = DB::connection()->prepare('SELECT Poster.id AS id, '
+                . 'Poster.name AS name, Poster.publisher as publisher,'
+                . 'Poster.artist AS artist, Poster.price as price, '
+                . 'Poster.location AS location, Poster.height AS height,'
+                . 'Poster.width AS width, Poster.image AS image, '
+                . 'Poster.sold AS sold, Username.name AS publishername '
+                . 'FROM Poster, Username '
+                . 'WHERE Poster.publisher=Username.id');
         $query->execute();
         $rows = $query->fetchAll();
         $posters = array();
@@ -24,7 +31,7 @@ class Poster extends BaseModel {
         foreach ($rows as $row) {
             $posters[] = new Poster(array(
                 'id' => $row['id'],
-                'name' => $row['p.name'],
+                'name' => $row['name'],
                 'publisher' => $row['publisher'],
                 'artist' => $row['artist'],
                 'price' => $row['price'],
@@ -33,7 +40,7 @@ class Poster extends BaseModel {
                 'width' => $row['width'],
                 'image' => $row['image'],
                 'sold' => $row['sold'],
-                'publishername' => $row['u.name']
+                'publishername' => $row['publishername']
             ));
         }
 

@@ -1,8 +1,8 @@
 CREATE TABLE Username(id SERIAL PRIMARY KEY,
-firstName varchar(50) NOT NULL,
-lastName varchar(50) NOT NULL,
+firstname varchar(50) NOT NULL,
+lastname varchar(50) NOT NULL,
 address varchar(50) NOT NULL,
-postalCode varchar(5) NOT NULL,
+postalcode varchar(5) NOT NULL,
 city varchar(50) NOT NULL,
 name varchar(20) NOT NULL,
 password varchar(20) NOT NULL);

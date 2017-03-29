@@ -16,9 +16,9 @@ $routes->get('/login', function() {
     AccountController::login();
 });
 
-$routes->post('/login', function(){
-  // Kirjautumisen käsittely
-  AccountController::handle_login();
+$routes->post('/login', function() {
+    // Kirjautumisen käsittely
+    AccountController::handle_login();
 });
 
 $routes->get('/posters/:id', function($id) {
@@ -37,11 +37,15 @@ $routes->get('/register', function() {
     AccountController::register();
 });
 
+$routes->post('/register', function() {
+    AccountController::new_user();
+});
+
 $routes->get('/account', function() {
     AccountController::account();
 });
 
-$routes->get('/account/new_poster', function(){
+$routes->get('/account/new_poster', function() {
     PosterController::create();
 });
 
@@ -49,7 +53,7 @@ $routes->get('/account/:id', function($id) {
     AccountController::myPosters($id);
 });
 
-$routes->post('/account/new_poster', function(){
+$routes->post('/account/new_poster', function() {
     PosterController::store();
 });
 

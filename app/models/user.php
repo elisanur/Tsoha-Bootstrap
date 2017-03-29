@@ -8,7 +8,7 @@
 
 class User extends BaseModel {
 
-    public $id, $firstName, $lastName, $address, $postalCode, $city, $name, $password;
+    public $id, $firstname, $lastname, $address, $postalcode, $city, $name, $password;
 
     public static function authenticate($username, $pass) {
         $query = DB::connection()->prepare('SELECT * FROM Username WHERE name = :name AND password = :password LIMIT 1');
@@ -17,10 +17,10 @@ class User extends BaseModel {
         if ($row) {
             $user = new User(array(
                 'id' => $row['id'],
-                'firstName' => $row['firstName'],
-                'lastName' => $row['lastName'],
+                'firstname' => $row['firstname'],
+                'lastname' => $row['lastname'],
                 'address' => $row['address'],
-                'postalCode' => $row['postalCode'],
+                'postalcode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']
@@ -39,10 +39,10 @@ class User extends BaseModel {
         if ($row) {
             $user = new User(array(
                 'id' => $row['id'],
-                'firstName' => $row['firstName'],
-                'lastName' => $row['lastName'],
+                'firstname' => $row['firstname'],
+                'lastname' => $row['lastname'],
                 'address' => $row['address'],
-                'postalCode' => $row['postalCode'],
+                'postalcode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']
@@ -54,8 +54,8 @@ class User extends BaseModel {
     }
 
     public function save() {
-        $query = DB::connection()->prepare('INSERT INTO Username(firstName, lastName, address, postalCode, city, name, password) VALUES (:firstName, :lastName, :address, :postalCode, :city, :name, :password) RETURNING id');
-        $query->execute(array('firstName' => $this->firstName, 'lastName' => $this->lastName, 'address' => $this->address, 'postalCode' => $this->postalCode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
+        $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password) RETURNING id');
+        $query->execute(array('firstname' => $this->firstname, 'lastname' => $this->lastname, 'address' => $this->address, 'postalcode' => $this->postalcode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
         $row = $query->fetch();
         $this->id = $row['id'];
     }

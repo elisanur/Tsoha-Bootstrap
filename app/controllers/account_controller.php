@@ -26,16 +26,20 @@ class AccountController extends BaseController {
     public static function login() {
         View::make('login.html');
     }
-
+    
     public static function register() {
+        View::make('register.html');
+    }
+
+    public static function new_user() {
 
         $params = $_POST;
 
         $user = new User(array(
-            'firstName' => $params['firstName'],
-            'lastName' => $params['lastName'],
+            'firstname' => $params['firstname'],
+            'lastname' => $params['lastname'],
             'address' => $params['address'],
-            'postalCode' => $params['postalCode'],
+            'postalcode' => $params['postalcode'],
             'city' => $params['city'],
             'name' => $params['name'],
             'password' => $params['password']
@@ -45,9 +49,6 @@ class AccountController extends BaseController {
         $user->save();
 
         Redirect::to('/account/' . $poster->publisher, array('message' => 'Poster wash added!'));
-
-
-        View::make('register.html');
     }
 
     public static function handle_login() {
