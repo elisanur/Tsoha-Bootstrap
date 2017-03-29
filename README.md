@@ -12,6 +12,7 @@ Tietokantasovelluksen harjoitustyön aiheena on uniikkeja julisteita myyvä verk
 ## Linkkejä sivuilleni
 
 * [Oma tili](http://elisanur.users.cs.helsinki.fi/postershop/account)
+* [Julisteen lisäyssivu](http://elisanur.users.cs.helsinki.fi/postershop/account/new_poster)
 * [Julisteiden listaus](http://elisanur.users.cs.helsinki.fi/postershop/posters)
 * [Julisteen esittelysivu](http://elisanur.users.cs.helsinki.fi/postershop/poster_show)
 * [Oman tilin muokkaussivu](http://elisanur.users.cs.helsinki.fi/postershop/edit_account)
