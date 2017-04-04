@@ -52,8 +52,36 @@ class PosterController extends BaseController {
         View::make('new_poster.html');
     }
 
-    public static function editPoster() {
-        View::make('edit_poster.html');
+    public static function editPoster($id) {
+        $poster = Poster::find($id);
+        View::make('edit_poster.html', array ('attributes'=> $poster));
     }
-
+    
+    public static function update($id){
+        $params = $_POST;
+        
+        $attributes = array(
+            'id' => $id,
+            'name' => $params['name'],
+            'artist' => $params['artist'],
+            'price' => $params['price'],
+            'location' => $params['location'],
+            'height' => $params['height'],
+            'width' => $params['width']
+        );
+        
+        Kint::dump($params);
+        
+        $poster = new Poster($attributes);
+        $errors = $poster->errors();
+        
+        if(count($errors) > 0){
+            View::make('edit_poster.html', array('errors' => $errors, 'attributes' => $attributes));
+        } else {
+            $poster->update();
+            
+            Redirect::to('/posters/', $poster->id, array('message' => 'Poster has been edited!'));
+        }
+    }
+    
 }

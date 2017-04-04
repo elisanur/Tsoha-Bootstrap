@@ -3,30 +3,30 @@
 
 <h1>Edit poster's info</h1>
 
-<form>
+<form method="post" action="{{base_path}}/edit_poster/{{attributes.id}}">
     <div class="form-group">
       <label>Name</label>
-      <input type="text" class="form-control" value="Eye">
+      <input type="text" class="form-control" name = "name" value="{{attributes.name}}">
     </div>
     <div class="form-group">
       <label>Artist</label>
-      <input type="text" class="form-control" value="Make Makkonen">
+      <input type="text" class="form-control" name ="artist" value="{{attributes.artist}}">
     </div>
     <div class="form-group">
       <label>Price</label>
-      <input type="text" class="form-control" value="23">
+      <input type="text" class="form-control" name ="price" value="{{attributes.price}}">
     </div>
     <div class="form-group">
       <label>Location</label>
-      <input type="text" class="form-control" value="Helsinki">
+      <input type="text" class="form-control" name = "location" value="{{attributes.location}}">
     </div>
     <div class="form-group">
       <label>Height</label>
-      <input type="text" class="form-control" value="50">
+      <input type="text" class="form-control" name = "height" value="{{attributes.height}}">
     </div>
     <div class="form-group">
       <label>Width</label>
-      <input type="text" class="form-control" value="40">
+      <input type="text" class="form-control" name = "width" value="{{attributes.width}}">
     </div>
     <div class="form-group">
       <button type="submit" class="btn btn-primary">Save</button>

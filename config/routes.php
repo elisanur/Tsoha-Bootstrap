@@ -8,8 +8,12 @@ $routes->get('/edit_account', function() {
     AccountController::editAccount();
 });
 
-$routes->get('/edit_poster', function() {
-    PosterController::editPoster();
+$routes->get('/edit_poster/:id', function($id) {
+    PosterController::editPoster($id);
+});
+
+$routes->post('/edit_poster/:id', function($id) {
+    PosterController::update($id);
 });
 
 $routes->get('/login', function() {

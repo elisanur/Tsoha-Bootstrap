@@ -107,10 +107,26 @@ class Poster extends BaseModel {
     }
 
     public function save() {
-        $query = DB::connection()->prepare('INSERT INTO Poster (name, publisher, artist, price, location, height, width) VALUES (:name, :publisher, :artist, :price, :location, :height, :width) RETURNING id');
-        $query->execute(array('name' => $this->name, 'publisher' => $this->publisher, 'artist' => $this->artist, 'price' => $this->price, 'location' => $this->location, 'height' => $this->height, 'width' => $this->width));
+        $query = DB::connection()->prepare('INSERT INTO Poster '
+                . '(name, publisher, artist, price, location, height, width) '
+                . 'VALUES (:name, :publisher, :artist, :price, :location, '
+                . ':height, :width) RETURNING id');
+        $query->execute(array('name' => $this->name, 'publisher' => $this->publisher, 
+            'artist' => $this->artist, 'price' => $this->price, 
+            'location' => $this->location, 'height' => $this->height, 
+            'width' => $this->width));
         $row = $query->fetch();
         $this->id = $row['id'];
+    }
+    
+    public function update(){
+        $query = DB::connection()->prepare('UPDATE Poster SET name = :name, '
+                . 'artist = :artist, price = :price, location = :location, '
+                . 'height = :height, width = :width WHERE id = :id');
+        $query->execute(array('name' => $this->name, 'artist' => $this->artist, 
+            'price' => $this->price, 'location' => $this->location, 
+            'height' => $this->height, 'width' => $this->width, 'id' => $this->id));
+        
     }
     
     public function validate_height(){

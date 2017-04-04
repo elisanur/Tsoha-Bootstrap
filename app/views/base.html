@@ -75,17 +75,17 @@
             {% endif %}
 
             {% if errors %}
-                <ul>
-                    {% for error in errors %}
-                    <li style="color:#ff3333";>{{error}}</li>
-                    {% endfor %}
-    
-                </ul>
-            
+            <ul>
+                {% for error in errors %}
+                <li style="color:#ff3333";>{{error}}</li>
+                {% endfor %}
+
+            </ul>
+
             {% endif %}
-            
+
             {% block content %}{% endblock %}
-       </div>
+        </div>
 
         {% block body %}
         <!-- jQuery -->
