@@ -23,7 +23,7 @@ class PosterController extends BaseController {
     public static function store() {
         $params = $_POST;
 
-        $poster = new Poster(array(
+        $attributes = array(
             'name' => $params['name'],
             'publisher' => $params['publisher'],
             'artist' => $params['artist'],
@@ -32,12 +32,20 @@ class PosterController extends BaseController {
             'height' => $params['height'],
             'width' => $params['width'],
             'image' => $params['image']
-        ));
+        );
 
-        Kint::dump($params);
-        $poster->save();
+//        Kint::dump($params);
+        
+        $poster = new Poster($attributes);
+        $errors = $poster->errors();
+        
+        if (count($errors)==0){
+            $poster->save();
+            Redirect::to('/account/' . $poster->publisher, array('message' => 'Poster was added!'));
+        } else {
+          View::make('new_poster.html', array('errors' => $errors, 'attributes' => $attributes));  
+        }
 
-        Redirect::to('/account/' . $poster->publisher, array('message' => 'Poster wash added!'));
     }
 
     public static function create() {

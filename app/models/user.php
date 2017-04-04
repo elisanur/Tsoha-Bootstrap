@@ -10,6 +10,11 @@ class User extends BaseModel {
 
     public $id, $firstname, $lastname, $address, $postalcode, $city, $name, $password;
 
+    public function __construct($attributes) {
+        parent::construct($attributes);
+        $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_username');
+    }
+
     public static function authenticate($username, $pass) {
         $query = DB::connection()->prepare('SELECT * FROM Username WHERE name = :name AND password = :password LIMIT 1');
         $query->execute(array('name' => $username, 'password' => $pass));
@@ -59,4 +64,33 @@ class User extends BaseModel {
         $row = $query->fetch();
         $this->id = $row['id'];
     }
+
+    public function validate_username() {
+        return parent::validate_string_length('Username', $this->name, 5);
+    }
+    
+    public function validate_firstName() {
+        return parent::validate_string_length('First name', $this->firstname, 2);
+    }
+    
+    public function validate_lastName() {
+        return parent::validate_string_length('Last name', $this->lastname, 2);
+    }
+    
+    public function validate_address() {
+        return parent::validate_string_length('Address', $this->address, 5);
+    }
+    
+    public function validate_postalCode() {
+        return parent::validate_string_length_exact('Postalcode', $this->postalcode, 5);
+    }
+    
+    public function validate_password() {
+        return parent::validate_string_length('Password', $this->password, 8);
+    }
+    
+    public function validate_city() {
+        return parent::validate_string_length('City', $this->city, 2);
+    }
+
 }
