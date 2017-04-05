@@ -7,15 +7,12 @@ Yleisiä linkkejä:
 
 ## Työn aihe
 
-Tietokantasovelluksen harjoitustyön aiheena on uniikkeja julisteita myyvä verkkokauppa. Verkkokaupassa myydään julisteita ja kehyksiä. Verkkokauppaan voi perustaa oman käyttäjätunnuksen, jolla pääsee lisäämään myytäviä tuotteita sekä tekemään ostoja. Tilaukseen voi valita julisteen sekä vapaavalintaisen kehyksen. Tämän järjestelmän on tarkoitus helpottaa mieluisesti kehystettyjen uniikkien julisteiden ostamista verkossa.
+Tietokantasovelluksen harjoitustyön aiheena on uniikkeja julisteita myyvä verkkokauppa. Verkkokauppaan voi perustaa oman käyttäjätunnuksen, jolla pääsee lisäämään myytäviä tuotteita sekä tilaamaan eli ostamaan julisteita. Tämän järjestelmän on tarkoitus helpottaa uniikkien julisteiden ostamista ja myymistä verkossa.
 
-## Linkkejä sivuilleni
 
-* [Oma tili](http://elisanur.users.cs.helsinki.fi/postershop/account/1) (esim. Make Makkosen oma sivu, jossa julisteen lisäysominaisuus)
-* [Julisteen lisäyssivu](http://elisanur.users.cs.helsinki.fi/postershop/account/new_poster)
-* [Julisteiden listaus](http://elisanur.users.cs.helsinki.fi/postershop/posters)
-* [Julisteen esittelysivu](http://elisanur.users.cs.helsinki.fi/postershop/posters/1)
-* [Oman tilin muokkaussivu](http://elisanur.users.cs.helsinki.fi/postershop/edit_account)
-* [Julisteen muokkaussivu](http://elisanur.users.cs.helsinki.fi/postershop/edit_poster)
-* [Kirjautumissivu](http://elisanur.users.cs.helsinki.fi/postershop/login)
-* [Rekisteröitymissivu](http://elisanur.users.cs.helsinki.fi/postershop/register)
+## Kirjautuminen käyttäjätunnuksella
+
+Voit rekisteröityä omalla tunnuksellasi! Mutta jos haluat kirjautua valmiilla käyttäjätunnuksella, voit käyttää esimerkiksi seuraavaa tunnusta (ellei joku ole käynyt poistamassa sitä):
+Käyttäjätunnus: makemies
+Salasana: makeonjees
+
