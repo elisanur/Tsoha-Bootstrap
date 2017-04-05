@@ -47,7 +47,7 @@ class User extends BaseModel {
                 'firstname' => $row['firstname'],
                 'lastname' => $row['lastname'],
                 'address' => $row['address'],
-                'posmethod =talcode' => $row['postalcode'],
+                'postalcode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']
@@ -63,6 +63,35 @@ class User extends BaseModel {
         $query->execute(array('firstname' => $this->firstname, 'lastname' => $this->lastname, 'address' => $this->address, 'postalcode' => $this->postalcode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
         $row = $query->fetch();
         $this->id = $row['id'];
+    }
+    
+    public function update(){
+        $query = DB::connection()->prepare('UPDATE Username SET firstname = :firstname, '
+                . 'lastname = :lastname, address = :address, postalcode = :postalcode, '
+                . 'city = :city, name = :name, password = :password WHERE id = :id');
+        $query->execute(array('id' => $this->id, 'firstname' => $this->firstname, 'lastname' => $this->lastname, 
+            'address' => $this->address, 'postalcode' => $this->postalcode, 
+            'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
+        
+    }
+    
+    public function destroy(){
+        $query = DB::connection()->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
+        $query->execute(array('id' => $this->id ));
+        print 'eka';
+        
+        $query = DB::connection()->prepare('DELETE FROM Purchase pc WHERE pc.username=:id');
+        $query->execute(array('id' => $this->id ));
+        print 'toka';
+      
+        $query = DB::connection()->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
+        $query->execute(array('id' => $this->id ));
+        print 'kolmas';
+       
+        $query = DB::connection()->prepare('DELETE FROM Username u WHERE u.id = :id');
+        $query->execute(array('id' => $this->id ));
+        print 'neljäs';
+        
     }
 
     public function validate_username() {

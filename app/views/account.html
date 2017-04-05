@@ -1,16 +1,23 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p class="text-left">Link to my info</p>
-<p class="text-left">Link to adding new posters to sell</p>
-<p class="text-left">Link to the posters i'm selling</p>
-<p class="text-left">Link to current orders</p>
+<p><a href="{{base_path}}/edit_account">My account information</a></p>
+<p class="text-left">Orders</p>
+
+{% if user_logged_in %}
 
 <h1>My posters</h1>
 
 <p>
     <a href="{{base_path}}/account/new_poster" class="btn btn-success">Add a poster</a>
 </p>
+
+
+{% else %}
+
+<h1> - Posters</h1>
+
+{% endif %}
 
 <table class="table table-striped table-bordered">
     <thead>

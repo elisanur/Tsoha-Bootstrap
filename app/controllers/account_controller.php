@@ -8,13 +8,9 @@
 
 class AccountController extends BaseController {
 
-    public static function myPosters($publisher) {
-// Haetaan kaikki pelit tietokannasta
-        
-        $publisher = parent::get_user_logged_in();
-        
-        $posters = Poster::allFromUser($publisher);
-// Renderöidään views/game kansiossa sijaitseva tiedosto index.html muuttujan $games datalla
+    public static function myPosters() {
+        $user = self::get_user_logged_in(); 
+        $posters = Poster::allFromUser($user->id);
         View::make('account.html', array('posters' => $posters));
     }
 
@@ -23,7 +19,43 @@ class AccountController extends BaseController {
     }
 
     public static function editAccount() {
-        View::make('edit_account.html');
+        $user = self::get_user_logged_in();
+        View::make('edit_account.html', array('attributes'=>$user));
+    }
+    
+    public static function update() {
+        $id =self::get_user_logged_in()->id;
+        
+        $params = $_POST;
+        
+        $attributes = array(
+            'id' => $id,
+            'firstname' => $params['firstname'],
+            'lastname' => $params['lastname'],
+            'address' => $params['address'],
+            'postalcode' => $params['postalcode'],
+            'city' => $params['city'],
+            'name' => $params['name'],
+            'password' => $params['password']
+        );
+        
+        $user = new User($attributes);
+        $errors = $user->errors();
+        
+        if(count($errors) > 0){
+            View::make('edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
+        } else {
+            $user->update();
+           
+            Redirect::to('/account', array('message' => 'Account information has been edited!'));
+        }
+    }
+    
+    public static function destroy(){
+        $id = self::get_user_logged_in()->id;
+        $user = new User(array('id' => $id));
+        $user->destroy();
+        Redirect::to('/', array('message' => 'User was deleted successfully!'));
     }
 
     public static function login() {
@@ -55,6 +87,7 @@ class AccountController extends BaseController {
 
         if (count($errors) == 0) {
             $user->save();
+            $_SESSION['user'] = $user->id;
             Redirect::to('/account/' . $user->id, array('message' => 'User created successfully!'));
         } else {
             View::make('register.html', array('errors' => $errors, 'attributes' => $attributes));
@@ -69,12 +102,17 @@ class AccountController extends BaseController {
         $user = User::authenticate($params['username'], $params['password']);
 
         if (!$user) {
-            View::make('user/login.html', array('error' => 'Väärä käyttäjätunnus tai salasana!', 'username' => $params['username']));
+            View::make('login.html', array('error' => 'Väärä käyttäjätunnus tai salasana!', 'username' => $params['username']));
         } else {
             $_SESSION['user'] = $user->id;
 
             Redirect::to('/', array('message' => 'Tervetuloa takaisin ' . $user->name . '!'));
         }
+    }
+    
+    public static function logout(){
+        $_SESSION['user'] = null;
+        Redirect::to('/login', array('message' => 'Olet kirjautunut ulos!'));
     }
 
 }

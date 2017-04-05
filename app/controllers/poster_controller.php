@@ -9,15 +9,18 @@
 class PosterController extends BaseController {
 
     public static function posters() {
-        // Haetaan kaikki pelit tietokannasta
         $posters = Poster::all();
-        // Renderöidään views/game kansiossa sijaitseva tiedosto index.html muuttujan $games datalla
         View::make('posters.html', array('posters' => $posters));
     }
 
     public static function posterShow($id) {
         $poster = Poster::find($id);
         View::make('poster_show.html', array('poster' => $poster));
+    }
+    
+    public static function usersPosters($id) {
+        $posters = Poster::allFromUser($id);
+        View::make('account.html', array('posters' => $posters));
     }
 
     public static function store() {
@@ -39,7 +42,7 @@ class PosterController extends BaseController {
         
         if (count($errors)==0){
             $poster->save();
-            Redirect::to('/account/' . $poster->publisher, array('message' => 'Poster was added!'));
+            Redirect::to('/account', array('message' => 'Poster was added!'));
         } else {
           View::make('new_poster.html', array('errors' => $errors, 'attributes' => $attributes));  
         }
