@@ -33,8 +33,6 @@ class PosterController extends BaseController {
             'width' => $params['width'],
             'image' => $params['image']
         );
-
-//        Kint::dump($params);
         
         $poster = new Poster($attributes);
         $errors = $poster->errors();
@@ -70,8 +68,6 @@ class PosterController extends BaseController {
             'width' => $params['width']
         );
         
-        Kint::dump($params);
-        
         $poster = new Poster($attributes);
         $errors = $poster->errors();
         
@@ -80,8 +76,14 @@ class PosterController extends BaseController {
         } else {
             $poster->update();
             
-            Redirect::to('/posters/', $poster->id, array('message' => 'Poster has been edited!'));
+            Redirect::to('/posters/' . $poster->id, array('message' => 'Poster has been edited!'));
         }
+    }
+    
+    public static function destroy($id){
+        $poster = new Poster(array('id' => $id));
+        $poster->destroy();
+        Redirect::to('/', array('message' => 'Poster was deleted successfully!'));
     }
     
 }

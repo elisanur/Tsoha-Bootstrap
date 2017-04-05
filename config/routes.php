@@ -16,6 +16,12 @@ $routes->post('/edit_poster/:id', function($id) {
     PosterController::update($id);
 });
 
+$routes->get('/edit_poster/:id/destroy', function($id) {
+    PosterController::destroy($id);
+});
+
+
+
 $routes->get('/login', function() {
     AccountController::login();
 });

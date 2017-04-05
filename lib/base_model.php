@@ -32,12 +32,14 @@ class BaseModel {
 
     public function validate_string_length($name, $string, $length) {
 
+        $string=trim($string);
+        
         $errors = array();
         if ($string == '' || $this->name == null) {
             $errors[] = $name . ' cannot be empty';
         }
         if (strlen($string) < $length) {
-            $errors[] = $name . ' should be atleast ' . $length . ' characters long!';
+            $errors[] = $name . ' cannot contain white spaces and should be atleast ' . $length . ' characters long!';
         }
 
         return $errors;

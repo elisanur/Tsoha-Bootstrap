@@ -82,7 +82,15 @@ class Poster extends BaseModel {
     }
 
     public static function find($id) {
-        $query = DB::connection()->prepare('SELECT * FROM Poster WHERE id = :id LIMIT 1');
+        $query = DB::connection()->prepare('SELECT Poster.id AS id, '
+                . 'Poster.name AS name, Poster.publisher as publisher,'
+                . 'Poster.artist AS artist, Poster.price as price, '
+                . 'Poster.location AS location, Poster.height AS height,'
+                . 'Poster.width AS width, Poster.image AS image, '
+                . 'Poster.sold AS sold, Username.name AS publishername '
+                . 'FROM Poster, Username '
+                . 'WHERE Poster.publisher=Username.id '
+                . 'AND Poster.id = :id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
 
@@ -98,6 +106,7 @@ class Poster extends BaseModel {
                 'width' => $row['width'],
                 'image' => $row['image'],
                 'sold' => $row['sold'],
+                'publishername' => $row['publishername']
             ));
 
             return $poster;
@@ -127,6 +136,17 @@ class Poster extends BaseModel {
             'price' => $this->price, 'location' => $this->location, 
             'height' => $this->height, 'width' => $this->width, 'id' => $this->id));
         
+    }
+    
+    public function destroy(){
+        $query = DB::connection()->prepare('DELETE FROM PosterCategory WHERE poster = :posterid');
+        $query->execute(array('posterid' => $this->id));
+        
+        $query = DB::connection()->prepare('DELETE FROM Purchase WHERE poster = :posterid');
+        $query->execute(array('posterid' => $this->id));
+        
+        $query = DB::connection()->prepare('DELETE FROM Poster WHERE id = :posterid');
+        $query->execute(array('posterid' => $this->id));
     }
     
     public function validate_height(){

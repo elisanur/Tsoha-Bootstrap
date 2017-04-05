@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% import "macros/forms.html" as forms %}
+
 <h1>{{poster.name}}</h1>
 
 <table class="table table-striped table-bordered">
@@ -49,7 +51,7 @@
             <td>{{poster.artist}}</td>
             <td>{{poster.price}}</td>
             <td>{{poster.location}}</td>
-            <td><a href="{{base_path}}/posters/{{poster.id}}">{{poster.publisher}}</a></td>
+            <td><a href="{{base_path}}/account/{{poster.publisher}}">{{poster.publishername}}</a></td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
         </tr>
@@ -59,7 +61,7 @@
 <p>
     <a href="#" class="btn btn-success">Add to shopping bag</a>
     <a href="{{base_path}}/edit_poster/{{poster.id}}" class="btn btn-primary">Edit</a>
-    <a href="#" class="btn btn-danger">Delete</a>
+    {{forms.destroy_button("#{base_path}/edit_poster/#{poster.id}/destroy")}}
     
 <!--    {% if user_logged_in %}-->
     

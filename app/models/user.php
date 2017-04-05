@@ -11,7 +11,7 @@ class User extends BaseModel {
     public $id, $firstname, $lastname, $address, $postalcode, $city, $name, $password;
 
     public function __construct($attributes) {
-        parent::construct($attributes);
+        parent::__construct($attributes);
         $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_username');
     }
 
@@ -47,7 +47,7 @@ class User extends BaseModel {
                 'firstname' => $row['firstname'],
                 'lastname' => $row['lastname'],
                 'address' => $row['address'],
-                'postalcode' => $row['postalcode'],
+                'posmethod =talcode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']

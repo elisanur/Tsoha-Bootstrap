@@ -10,6 +10,9 @@ class AccountController extends BaseController {
 
     public static function myPosters($publisher) {
 // Haetaan kaikki pelit tietokannasta
+        
+        $publisher = parent::get_user_logged_in();
+        
         $posters = Poster::allFromUser($publisher);
 // Renderöidään views/game kansiossa sijaitseva tiedosto index.html muuttujan $games datalla
         View::make('account.html', array('posters' => $posters));
