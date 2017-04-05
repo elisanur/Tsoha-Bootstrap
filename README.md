@@ -12,7 +12,7 @@ Tietokantasovelluksen harjoitustyön aiheena on uniikkeja julisteita myyvä verk
 
 ## Kirjautuminen käyttäjätunnuksella
 
-Voit rekisteröityä omalla tunnuksellasi! Mutta jos haluat kirjautua valmiilla käyttäjätunnuksella, voit käyttää esimerkiksi seuraavaa tunnusta (ellei joku ole käynyt poistamassa sitä):
-Käyttäjätunnus: makemies
-Salasana: makeonjees
+<p> Voit rekisteröityä omalla tunnuksellasi! Mutta jos haluat kirjautua valmiilla käyttäjätunnuksella, voit käyttää esimerkiksi seuraavaa tunnusta (ellei joku ole käynyt poistamassa sitä): </p>
+<p>Käyttäjätunnus: makemies</p>
+<p>Salasana: makeonjees</p>
 
