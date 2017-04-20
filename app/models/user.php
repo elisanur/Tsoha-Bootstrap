@@ -76,22 +76,23 @@ class User extends BaseModel {
 
         return $users;
     }
-    
-    public static function topSellers() {
-        $query = DB::connection()->prepare('SELECT p.publisher AS publisher, '
-                . 'COUNT(p.publisher) '
-                . 'FROM Poster p '
-                . 'LEFT JOIN Username u '
-                . 'ON publisher = u.id '
-                . 'GROUP BY publisher LIMIT 10');
-        $rows = $query->fetchAll();
-        $users = array();
 
+    public static function topSellers() {
+        $query = DB::connection()->prepare('SELECT p.publisher AS publisher, COUNT(p.publisher) AS amount FROM Poster p INNER JOIN Username u ON p.publisher = u.id WHERE p.sold=TRUE GROUP BY publisher ORDER BY amount DESC LIMIT 10');
+        $query->execute();
+        $rows = $query->fetchAll();
+        $top = array();
+        
         foreach ($rows as $row) {
-            $users[] = User::find(1);
+            Kint::dump($row);
+            
+            $top[] = array(
+                'publisher' => User::find($row['publisher']),
+                'amount' => $row['amount']
+            );
         }
 
-        return $users;
+        return $top;
     }
 
     public function save() {
@@ -111,17 +112,35 @@ class User extends BaseModel {
     }
 
     public function destroy() {
-        $query = DB::connection()->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
-        $query->execute(array('id' => $this->id));
+        $con = DB::connection();
+        $con->beginTransaction();
 
-        $query = DB::connection()->prepare('DELETE FROM Purchase WHERE EXISTS (SELECT * FROM Purchase WHERE Purchase.username = :id)');
-        $query->execute(array('id' => $this->id));
+        try {
 
-        $query = DB::connection()->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
-        $query->execute(array('id' => $this->id));
+            $stmt = $con->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
+            $stmt->execute(array('id' => $this->id));
 
-        $query = DB::connection()->prepare('DELETE FROM Username u WHERE u.id = :id');
-        $query->execute(array('id' => $this->id));
+            $stmt = $con->prepare('DELETE FROM Purchase WHERE username = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $posters = Poster::allFromUser($this->id);
+
+            foreach ($posters as $poster) {
+                $stmt = $con->prepare('DELETE FROM Purchase WHERE poster = :id');
+                $stmt->execute(array('id' => $poster->id));
+            }
+
+            $stmt = $con->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $stmt = $con->prepare('DELETE FROM Username u WHERE u.id = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $con->commit();
+        } catch (PDOException $ex) {
+            $con->rollBack();
+            die($ex);
+        }
     }
 
     public function validate_username() {

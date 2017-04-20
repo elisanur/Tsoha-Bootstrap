@@ -16,10 +16,10 @@
     </thead>
     <tbody>
         
-        {% for user in users %} 
+        {% for topSeller in topSellers %} 
         
         <tr>
-            <td><a href="{{base_path}}/account/{{user.id}}">{{user.name}}</td>
+            <td><a href="{{base_path}}/users_posters/{{topSeller.publisher.id}}">{{topSeller.publisher.name}} ({{topSeller.amount}})</td>
         </tr>
         
         {% endfor %}

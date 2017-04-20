@@ -57,7 +57,7 @@ class Poster extends BaseModel {
                 . 'Poster.sold AS sold, Username.name AS publishername '
                 . 'FROM Poster, Username '
                 . 'WHERE Poster.publisher=Username.id '
-                . 'AND publisher = :publisher');
+                . 'AND publisher = :publisher AND Poster.sold = FALSE');
         $query->execute(array('publisher' => $publisher));
         $rows = $query->fetchAll();
         $posters = array();

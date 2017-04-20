@@ -17,7 +17,25 @@ INSERT INTO Poster (name, publisher, artist, price, location, height, width)
 VALUES ('Young and beautiful', 2, 'Liisa Laatu', 15, 'Espoo', 100, 70);
 
 INSERT INTO Poster (name, publisher, artist, price, location, height, width) 
-VALUES ('Wrong', 3, 'Make Mikkonen', 40, 'Helsinki', 200, 150); 
+VALUES ('Wrong', 3, 'Make Mikkonen', 40, 'Helsinki', 200, 150);
+
+INSERT INTO Poster (name, publisher, artist, price, location, height, width, sold) 
+VALUES ('Wrong', 3, 'Make Mikkonen', 40, 'Helsinki', 200, 150, TRUE);
+
+INSERT INTO Poster (name, publisher, artist, price, location, height, width, sold) 
+VALUES ('Wrong', 3, 'Make Mikkonen', 40, 'Helsinki', 200, 150, TRUE);
+
+INSERT INTO Poster (name, publisher, artist, price, location, height, width, sold) 
+VALUES ('Wrong', 3, 'Make Mikkonen', 40, 'Helsinki', 200, 150, TRUE);
+
+INSERT INTO Poster (name, publisher, artist, price, location, height, width, sold) 
+VALUES ('Wrong', 3, 'Make Mikkonen', 40, 'Helsinki', 200, 150, TRUE); 
+
+INSERT INTO Poster (name, publisher, artist, price, location, height, width, sold) 
+VALUES ('Young and beautiful', 2, 'Liisa Laatu', 15, 'Espoo', 100, 70, TRUE);
+
+INSERT INTO Poster (name, publisher, artist, price, location, height, width, sold) 
+VALUES ('Young and beautiful', 2, 'Liisa Laatu', 15, 'Espoo', 100, 70, TRUE); 
 
 INSERT INTO Category (name) VALUES ('modernism');
 INSERT INTO Category (name) VALUES ('post-modernism');
