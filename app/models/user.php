@@ -113,19 +113,15 @@ class User extends BaseModel {
     public function destroy() {
         $query = DB::connection()->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
         $query->execute(array('id' => $this->id));
-        print 'eka';
 
-        $query = DB::connection()->prepare('DELETE FROM Purchase pc WHERE pc.username=:id');
+        $query = DB::connection()->prepare('DELETE FROM Purchase WHERE EXISTS (SELECT * FROM Purchase WHERE Purchase.username = :id)');
         $query->execute(array('id' => $this->id));
-        print 'toka';
 
         $query = DB::connection()->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
         $query->execute(array('id' => $this->id));
-        print 'kolmas';
 
         $query = DB::connection()->prepare('DELETE FROM Username u WHERE u.id = :id');
         $query->execute(array('id' => $this->id));
-        print 'neljäs';
     }
 
     public function validate_username() {

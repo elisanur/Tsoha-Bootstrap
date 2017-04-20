@@ -67,8 +67,7 @@ class AccountController extends BaseController {
     }
 
     public static function destroy() {
-        $id = self::get_user_logged_in()->id;
-        $user = new User(array('id' => $id));
+        $user = self::get_user_logged_in();
         $_SESSION['user'] = null;
         $user->destroy();
         Redirect::to('/', array('message' => 'User was deleted successfully!'));

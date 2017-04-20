@@ -80,3 +80,18 @@ $routes->get('/account', function() {
 $routes->get('/shopping_bag', function() {
     AccountController::shoppingBag();
 });
+
+// Category related:
+
+$routes->get('/categories', function(){
+    CategoryController::listAll();
+});
+$routes->post('/category', function(){
+    CategoryController::store();
+});
+$routes->get('/category/new', function() {
+    CategoryController::create();
+});
+$routes->get('/category/:id', function($id){
+    CategoryController::show($id);
+});

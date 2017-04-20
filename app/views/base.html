@@ -35,7 +35,9 @@
                 <div class="collapse navbar-collapse" id="navigation">
                     <ul class="nav navbar-nav">
                         <li><a href="{{base_path}}/posters">Posters</a></li>
+                        <li><a href="{{base_path}}/categories">Categories</a></li>
                         <li><a href="{{base_path}}/users">Users</a></li>
+                        
                     </ul>
                     
                     {% if user_logged_in %}
@@ -81,13 +83,8 @@
         </div>
 
         {% block body %}
-        <!-- jQuery -->
         <script src="{{base_path}}/vendor/jquery.min.js"></script>
-
-        <!-- Bootstrap (skriptitiedosto) -->
         <script src="{{base_path}}/vendor/bootstrap/js/bootstrap.min.js"></script>
-
-        <!-- Oma skriptitiedostomme -->
         <script src="{{base_path}}/assets/js/site.js"></script>
         {% endblock %}
     </body>

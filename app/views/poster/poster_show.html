@@ -55,8 +55,13 @@
 </table>
 <p>
     <a href="#" class="btn btn-success">Add to shopping bag</a>
+    
+    {% if user_logged_in_id == poster.publisher %}
+    
     <a href="{{base_path}}/edit_poster/{{poster.id}}" class="btn btn-primary">Edit</a>
     {{forms.destroy_button("#{base_path}/edit_poster/#{poster.id}/destroy")}}
-  
+    
+    {% endif %}
+    
 </p>
 {% endblock %}
