@@ -1,9 +1,6 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
  */
 
 class User extends BaseModel {
@@ -58,66 +55,103 @@ class User extends BaseModel {
         return null;
     }
 
+    public static function all() {
+        $query = DB::connection()->prepare('SELECT * FROM Username');
+        $query->execute();
+        $rows = $query->fetchAll();
+        $users = array();
+
+        foreach ($rows as $row) {
+            $users[] = new User(array(
+                'id' => $row['id'],
+                'firstname' => $row['firstname'],
+                'lastname' => $row['lastname'],
+                'address' => $row['address'],
+                'postalcode' => $row['postalcode'],
+                'city' => $row['city'],
+                'name' => $row['name'],
+                'password' => $row['password']
+            ));
+        }
+
+        return $users;
+    }
+    
+    public static function topSellers() {
+        $query = DB::connection()->prepare('SELECT p.publisher AS publisher, '
+                . 'COUNT(p.publisher) '
+                . 'FROM Poster p '
+                . 'LEFT JOIN Username u '
+                . 'ON publisher = u.id '
+                . 'GROUP BY publisher LIMIT 10');
+        $rows = $query->fetchAll();
+        $users = array();
+
+        foreach ($rows as $row) {
+            $users[] = User::find(1);
+        }
+
+        return $users;
+    }
+
     public function save() {
         $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password) RETURNING id');
         $query->execute(array('firstname' => $this->firstname, 'lastname' => $this->lastname, 'address' => $this->address, 'postalcode' => $this->postalcode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
         $row = $query->fetch();
         $this->id = $row['id'];
     }
-    
-    public function update(){
+
+    public function update() {
         $query = DB::connection()->prepare('UPDATE Username SET firstname = :firstname, '
                 . 'lastname = :lastname, address = :address, postalcode = :postalcode, '
                 . 'city = :city, name = :name, password = :password WHERE id = :id');
-        $query->execute(array('id' => $this->id, 'firstname' => $this->firstname, 'lastname' => $this->lastname, 
-            'address' => $this->address, 'postalcode' => $this->postalcode, 
+        $query->execute(array('id' => $this->id, 'firstname' => $this->firstname, 'lastname' => $this->lastname,
+            'address' => $this->address, 'postalcode' => $this->postalcode,
             'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
-        
     }
-    
-    public function destroy(){
+
+    public function destroy() {
         $query = DB::connection()->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
-        $query->execute(array('id' => $this->id ));
+        $query->execute(array('id' => $this->id));
         print 'eka';
-        
+
         $query = DB::connection()->prepare('DELETE FROM Purchase pc WHERE pc.username=:id');
-        $query->execute(array('id' => $this->id ));
+        $query->execute(array('id' => $this->id));
         print 'toka';
-      
+
         $query = DB::connection()->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
-        $query->execute(array('id' => $this->id ));
+        $query->execute(array('id' => $this->id));
         print 'kolmas';
-       
+
         $query = DB::connection()->prepare('DELETE FROM Username u WHERE u.id = :id');
-        $query->execute(array('id' => $this->id ));
+        $query->execute(array('id' => $this->id));
         print 'neljäs';
-        
     }
 
     public function validate_username() {
         return parent::validate_string_length('Username', $this->name, 5);
     }
-    
+
     public function validate_firstName() {
         return parent::validate_string_length('First name', $this->firstname, 2);
     }
-    
+
     public function validate_lastName() {
         return parent::validate_string_length('Last name', $this->lastname, 2);
     }
-    
+
     public function validate_address() {
         return parent::validate_string_length('Address', $this->address, 5);
     }
-    
+
     public function validate_postalCode() {
         return parent::validate_string_length_exact('Postalcode', $this->postalcode, 5);
     }
-    
+
     public function validate_password() {
         return parent::validate_string_length('Password', $this->password, 8);
     }
-    
+
     public function validate_city() {
         return parent::validate_string_length('City', $this->city, 2);
     }

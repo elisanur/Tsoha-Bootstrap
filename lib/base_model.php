@@ -18,16 +18,12 @@ class BaseModel {
     }
 
     public function errors() {
-        // Lisätään $errors muuttujaan kaikki virheilmoitukset taulukkona
         $errors = array();
-
         foreach ($this->validators as $validator) {
             $errors = array_merge($errors, $this->{$validator}());
-
-// Kutsu validointimetodia tässä ja lisää sen palauttamat virheet errors-taulukkoon
         }
 
-        return $errors;
+        return array_filter($errors);
     }
 
     public function validate_string_length($name, $string, $length) {

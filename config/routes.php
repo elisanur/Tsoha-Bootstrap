@@ -1,10 +1,18 @@
 <?php
 
 $routes->get('/', function() {
-    HelloWorldController::index();
+    AccountController::topSellers();
 });
 
-$routes->post('/edit_account/destroy', function(){
+$routes->get('/users', function() {
+    AccountController::allUsers();
+});
+
+$routes->get('/users_posters/:id', function($id) {
+    PosterController::usersPosters($id);
+});
+
+$routes->post('/edit_account/destroy', function() {
     AccountController::destroy();
 });
 
@@ -37,7 +45,7 @@ $routes->post('/login', function() {
     AccountController::handle_login();
 });
 
-$routes->get('/logout', function(){
+$routes->get('/logout', function() {
     AccountController::logout();
 });
 
@@ -65,10 +73,10 @@ $routes->post('/account/new_poster', function() {
     PosterController::store();
 });
 
-$routes->get('/account/:id', function($id) {
-    PosterController::usersPosters($id);
-});
-
 $routes->get('/account', function() {
     AccountController::myPosters();
+});
+
+$routes->get('/shopping_bag', function() {
+    AccountController::shoppingBag();
 });

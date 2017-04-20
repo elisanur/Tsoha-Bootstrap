@@ -1,9 +1,6 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
  */
 
 class PosterController extends BaseController {
@@ -20,15 +17,16 @@ class PosterController extends BaseController {
     
     public static function usersPosters($id) {
         $posters = Poster::allFromUser($id);
-        View::make('account.html', array('posters' => $posters));
+        View::make('users_posters.html', array('posters' => $posters));
     }
 
     public static function store() {
         $params = $_POST;
+        $publisher = self::get_user_logged_in_id();
 
         $attributes = array(
             'name' => $params['name'],
-            'publisher' => $params['publisher'],
+            'publisher' => $publisher,
             'artist' => $params['artist'],
             'price' => $params['price'],
             'location' => $params['location'],

@@ -9,9 +9,19 @@
 class AccountController extends BaseController {
 
     public static function myPosters() {
-        $user = self::get_user_logged_in(); 
+        $user = self::get_user_logged_in();
         $posters = Poster::allFromUser($user->id);
         View::make('account.html', array('posters' => $posters));
+    }
+
+    public static function allUsers() {
+        $users = User::all();
+        View::make('users.html', array('users' => $users));
+    }
+
+    public static function topSellers() {
+        $users = User::topSellers();
+        View::make('home.html', array('users' => $users));
     }
 
     public static function account() {
@@ -20,14 +30,19 @@ class AccountController extends BaseController {
 
     public static function editAccount() {
         $user = self::get_user_logged_in();
-        View::make('edit_account.html', array('attributes'=>$user));
+        View::make('edit_account.html', array('attributes' => $user));
     }
     
+    public static function shoppingBag() {
+        $user = self::get_user_logged_in_id();
+        View::make('shopping_bag.html');
+    }
+
     public static function update() {
-        $id =self::get_user_logged_in()->id;
-        
+        $id = self::get_user_logged_in()->id;
+
         $params = $_POST;
-        
+
         $attributes = array(
             'id' => $id,
             'firstname' => $params['firstname'],
@@ -38,22 +53,23 @@ class AccountController extends BaseController {
             'name' => $params['name'],
             'password' => $params['password']
         );
-        
+
         $user = new User($attributes);
         $errors = $user->errors();
-        
-        if(count($errors) > 0){
+
+        if (count($errors) > 0) {
             View::make('edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
         } else {
             $user->update();
-           
+
             Redirect::to('/account', array('message' => 'Account information has been edited!'));
         }
     }
-    
-    public static function destroy(){
+
+    public static function destroy() {
         $id = self::get_user_logged_in()->id;
         $user = new User(array('id' => $id));
+        $_SESSION['user'] = null;
         $user->destroy();
         Redirect::to('/', array('message' => 'User was deleted successfully!'));
     }
@@ -92,8 +108,6 @@ class AccountController extends BaseController {
         } else {
             View::make('register.html', array('errors' => $errors, 'attributes' => $attributes));
         }
-
-        
     }
 
     public static function handle_login() {
@@ -109,8 +123,8 @@ class AccountController extends BaseController {
             Redirect::to('/', array('message' => 'Tervetuloa takaisin ' . $user->name . '!'));
         }
     }
-    
-    public static function logout(){
+
+    public static function logout() {
         $_SESSION['user'] = null;
         Redirect::to('/login', array('message' => 'Olet kirjautunut ulos!'));
     }

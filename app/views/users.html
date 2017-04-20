@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Users</h1>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>User</th>
+        </tr>
+    </thead>
+    <tbody>
+        
+        {% for user in users %} 
+        
+        <tr>
+            <td><a href="{{base_path}}/users_posters/{{user.id}}">{{user.name}}</td>
+        </tr>
+        
+        {% endfor %}
+        
+    </tbody>
+</table>
+
+{% endblock %}
