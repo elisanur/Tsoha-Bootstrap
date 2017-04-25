@@ -4,4 +4,44 @@
 <p class="text-center">This is your shopping bag</p>
 
 
+<h1>Posters</h1>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Artist</th>
+            <th>Price (€)</th>
+            <th>Location</th>
+            <th>Publisher</th>
+            <th>Height (cm)</th>
+            <th>Width (cm)</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if shoppingBag %}
+        {% for poster in shoppingBag %}
+
+        <tr>
+            <td>{{poster.image}}</td>
+            <td><a href="{{base_path}}/posters/{{poster.id}}">{{poster.name}}</td>
+            <td>{{poster.artist}}</td>
+            <td>{{poster.price}}</td>
+            <td>{{poster.location}}</td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</td>
+            <td>{{poster.height}}</td>
+            <td>{{poster.width}}</td>
+            <td></td>
+            <th><a href="{{base_path}}/" class="btn btn-success">Remove</a></th>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </tbody>
+</table>
+
+
 {% endblock %}

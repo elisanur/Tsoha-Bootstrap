@@ -5,11 +5,12 @@
 
 class User extends BaseModel {
 
-    public $id, $firstname, $lastname, $address, $postalcode, $city, $name, $password;
+    public $id, $firstName, $lastName, $address, $postalCode, $city, $name, $password, $shoppingBag;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
         $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_username');
+        $this->shoppingBag = array();
     }
 
     public static function authenticate($username, $pass) {
@@ -19,10 +20,10 @@ class User extends BaseModel {
         if ($row) {
             $user = new User(array(
                 'id' => $row['id'],
-                'firstname' => $row['firstname'],
-                'lastname' => $row['lastname'],
+                'firstName' => $row['firstname'],
+                'lastName' => $row['lastname'],
                 'address' => $row['address'],
-                'postalcode' => $row['postalcode'],
+                'postalCode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']
@@ -41,10 +42,10 @@ class User extends BaseModel {
         if ($row) {
             $user = new User(array(
                 'id' => $row['id'],
-                'firstname' => $row['firstname'],
-                'lastname' => $row['lastname'],
+                'firstName' => $row['firstname'],
+                'lastName' => $row['lastname'],
                 'address' => $row['address'],
-                'postalcode' => $row['postalcode'],
+                'postalCode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']
@@ -64,10 +65,10 @@ class User extends BaseModel {
         foreach ($rows as $row) {
             $users[] = new User(array(
                 'id' => $row['id'],
-                'firstname' => $row['firstname'],
-                'lastname' => $row['lastname'],
+                'firstName' => $row['firstname'],
+                'lastName' => $row['lastname'],
                 'address' => $row['address'],
-                'postalcode' => $row['postalcode'],
+                'postalCode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
                 'password' => $row['password']
@@ -82,9 +83,9 @@ class User extends BaseModel {
         $query->execute();
         $rows = $query->fetchAll();
         $top = array();
-        
+
         foreach ($rows as $row) {
-            
+
             $top[] = array(
                 'publisher' => User::find($row['publisher']),
                 'amount' => $row['amount']
@@ -96,7 +97,7 @@ class User extends BaseModel {
 
     public function save() {
         $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password) RETURNING id');
-        $query->execute(array('firstname' => $this->firstname, 'lastname' => $this->lastname, 'address' => $this->address, 'postalcode' => $this->postalcode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
+        $query->execute(array('firstname' => $this->firstName, 'lastname' => $this->lastName, 'address' => $this->address, 'postalcode' => $this->postalCode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
         $row = $query->fetch();
         $this->id = $row['id'];
     }
@@ -105,8 +106,8 @@ class User extends BaseModel {
         $query = DB::connection()->prepare('UPDATE Username SET firstname = :firstname, '
                 . 'lastname = :lastname, address = :address, postalcode = :postalcode, '
                 . 'city = :city, name = :name, password = :password WHERE id = :id');
-        $query->execute(array('id' => $this->id, 'firstname' => $this->firstname, 'lastname' => $this->lastname,
-            'address' => $this->address, 'postalcode' => $this->postalcode,
+        $query->execute(array('id' => $this->id, 'firstname' => $this->firstName, 'lastname' => $this->lastName,
+            'address' => $this->address, 'postalcode' => $this->postalCode,
             'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
     }
 
@@ -142,16 +143,36 @@ class User extends BaseModel {
         }
     }
 
+    public function removeFromShoppingBag($poster) {
+        if ($this->shoppingBag) {
+            try {
+                unset($this->shoppingBag[$poster]);
+            } catch (Exception $ex) {
+                
+            }
+        }
+    }
+
+    public function addToShoppingBag($poster) {
+        if ($this->shoppingBag && $poster) {
+            try {
+                array_push($this->shoppingBag, $poster);
+            } catch (Exception $ex) {
+                
+            }
+        }
+    }
+
     public function validate_username() {
         return parent::validate_string_length('Username', $this->name, 5);
     }
 
     public function validate_firstName() {
-        return parent::validate_string_length('First name', $this->firstname, 2);
+        return parent::validate_string_length('First name', $this->firstName, 2);
     }
 
     public function validate_lastName() {
-        return parent::validate_string_length('Last name', $this->lastname, 2);
+        return parent::validate_string_length('Last name', $this->lastName, 2);
     }
 
     public function validate_address() {
@@ -159,7 +180,7 @@ class User extends BaseModel {
     }
 
     public function validate_postalCode() {
-        return parent::validate_string_length_exact('Postalcode', $this->postalcode, 5);
+        return parent::validate_string_length_exact('Postalcode', $this->postalCode, 5);
     }
 
     public function validate_password() {

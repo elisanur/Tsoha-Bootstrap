@@ -11,12 +11,12 @@ class AccountController extends BaseController {
     public static function myPosters() {
         $user = self::get_user_logged_in();
         $posters = Poster::allFromUser($user->id);
-        View::make('account.html', array('posters' => $posters));
+        View::make('user/account.html', array('posters' => $posters));
     }
 
     public static function allUsers() {
         $users = User::all();
-        View::make('users.html', array('users' => $users));
+        View::make('user/users.html', array('users' => $users));
     }
 
     public static function topSellers() {
@@ -25,17 +25,34 @@ class AccountController extends BaseController {
     }
 
     public static function account() {
-        View::make('account.html');
+        View::make('user/account.html');
     }
 
     public static function editAccount() {
         $user = self::get_user_logged_in();
-        View::make('edit_account.html', array('attributes' => $user));
+        View::make('user/edit_account.html', array('attributes' => $user));
     }
     
     public static function shoppingBag() {
-        $user = self::get_user_logged_in_id();
-        View::make('shopping_bag.html');
+        $user = self::get_user_logged_in();    
+        Kint::dump($user);
+        View::make('user/shopping_bag.html', array('shoppingBag'=>$user->shoppingBag));
+    }
+    
+    public static function removeFromShoppingBag(){
+        $user = self::get_user_logged_in();
+        $params = $_POST;
+        $poster = Poster::find($params['posterId']);
+        $user->removeFromShoppingBag($poster);
+        View::make('user/shopping_bag.html', array($user->shoppingBag));
+    }
+    
+    public static function addToShoppingBag() {
+        $user = self::get_user_logged_in();
+        $params = $_POST;
+        $poster = Poster::find($params['posterId']);
+        $user->addToShoppingBag($poster);
+        View::make('user/shopping_bag.html', array($user->shoppingBag));
     }
 
     public static function update() {
@@ -58,7 +75,7 @@ class AccountController extends BaseController {
         $errors = $user->errors();
 
         if (count($errors) > 0) {
-            View::make('edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
+            View::make('user/edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
         } else {
             $user->update();
 
@@ -74,11 +91,11 @@ class AccountController extends BaseController {
     }
 
     public static function login() {
-        View::make('login.html');
+        View::make('user/login.html');
     }
 
     public static function register() {
-        View::make('register.html');
+        View::make('user/register.html');
     }
 
     public static function new_user() {
@@ -105,7 +122,7 @@ class AccountController extends BaseController {
             $_SESSION['user'] = $user->id;
             Redirect::to('/account/' . $user->id, array('message' => 'User created successfully!'));
         } else {
-            View::make('register.html', array('errors' => $errors, 'attributes' => $attributes));
+            View::make('user/register.html', array('errors' => $errors, 'attributes' => $attributes));
         }
     }
 

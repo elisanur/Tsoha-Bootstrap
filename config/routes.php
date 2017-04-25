@@ -1,7 +1,27 @@
 <?php
 
+// account related
+
 $routes->get('/', function() {
     AccountController::topSellers();
+});
+
+
+
+$routes->post('/shopping_bag/remove', function() {
+    AccountController::removeFromShoppingBag();
+});
+
+$routes->post('/shopping_bag/add', function() {
+    AccountController::addToShoppingBag();
+});
+
+$routes->get('/shopping_bag', function() {
+    AccountController::shoppingBag();
+});
+
+$routes->get('/account', function() {
+    AccountController::myPosters();
 });
 
 $routes->get('/users', function() {
@@ -24,6 +44,28 @@ $routes->post('/edit_account', function() {
     AccountController::update();
 });
 
+$routes->get('/login', function() {
+    AccountController::login();
+});
+
+$routes->post('/login', function() {
+    AccountController::handle_login();
+});
+
+$routes->get('/logout', function() {
+    AccountController::logout();
+});
+
+$routes->get('/register', function() {
+    AccountController::register();
+});
+
+$routes->post('/register', function() {
+    AccountController::new_user();
+});
+
+
+// poster related
 
 $routes->post('/edit_poster/:id/destroy', function($id) {
     PosterController::destroy($id);
@@ -37,32 +79,12 @@ $routes->post('/edit_poster/:id', function($id) {
     PosterController::update($id);
 });
 
-$routes->get('/login', function() {
-    AccountController::login();
-});
-
-$routes->post('/login', function() {
-    AccountController::handle_login();
-});
-
-$routes->get('/logout', function() {
-    AccountController::logout();
-});
-
 $routes->get('/posters/:id', function($id) {
     PosterController::posterShow($id);
 });
 
 $routes->get('/posters', function() {
     PosterController::posters();
-});
-
-$routes->get('/register', function() {
-    AccountController::register();
-});
-
-$routes->post('/register', function() {
-    AccountController::new_user();
 });
 
 $routes->get('/account/new_poster', function() {
@@ -73,13 +95,6 @@ $routes->post('/account/new_poster', function() {
     PosterController::store();
 });
 
-$routes->get('/account', function() {
-    AccountController::myPosters();
-});
-
-$routes->get('/shopping_bag', function() {
-    AccountController::shoppingBag();
-});
 
 // Category related:
 

@@ -4,7 +4,7 @@ class CategoryController extends BaseController {
 
     public static function listAll() {
         $categories = Category::all();
-        View::make('categories.html', array('categories' => $categories));
+        View::make('category/categories.html', array('categories' => $categories));
     }
 
     public static function store() {
@@ -16,7 +16,7 @@ class CategoryController extends BaseController {
         $errors = $category->errors();
         if (count($errors) == 0) {
             $category->save();
-            Redirect::to('/category', array('message' => 'Category added!'));
+            Redirect::to('/account/new_poster', array('message' => 'Category added!'));
         } else {
             View::make('/category/new.html', array('errors' => $errors, 'attributes' => $attributes));
         }

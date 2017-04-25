@@ -36,7 +36,10 @@
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
             <td></td>
-            <th><a class="btn btn-default btn-sm" href="#">Add to shopping bag</a></th>
+            
+            <th><form method="post" action="{{base_path}}/shopping_bag/add">
+                    <input type="hidden" name="posterId" value="{{poster.id}}" />
+                    <button type="submit" class="btn btn-default btn-sm">Add to shopping bag</button></form></th>
         </tr>
         {% endif %}
 

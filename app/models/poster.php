@@ -128,6 +128,16 @@ class Poster extends BaseModel {
         $this->id = $row['id'];
     }
     
+    public static function savePosterCategory($posterId, $category){
+        //tarkista ensin onko kategoria olemassa!!
+        
+        
+        
+        $query = DB::connection()->prepare('INSERT INTO PosterCategory (category, poster) '
+                . 'VALUES (:category, :poster)');
+        $query->execute(array('category' => $category, 'poster' => $posterId));
+    }
+    
     public function update(){
         $query = DB::connection()->prepare('UPDATE Poster SET name = :name, '
                 . 'artist = :artist, price = :price, location = :location, '
@@ -139,7 +149,8 @@ class Poster extends BaseModel {
     }
     
     public function destroy(){
-        $query = DB::connection()->prepare('DELETE FROM PosterCategory WHERE poster = :posterid');
+        $query = DB::connection()->prepare('DELETE FROM PosterCategory '
+                . 'WHERE poster = :posterid');
         $query->execute(array('posterid' => $this->id));
         
         $query = DB::connection()->prepare('DELETE FROM Purchase WHERE poster = :posterid');
