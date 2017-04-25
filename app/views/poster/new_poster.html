@@ -1,49 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Add a new poster to sell</h1>
+<h1>Add a new poster to sell</h1>
 
-  <form method="post" action="{{base_path}}/account/new_poster">
+<form method="post" action="{{base_path}}/account/new_poster">
     <div class="form-group">
-      <label>Name</label>
-      <input type="text" name="name" class="form-control" value="{{attributes.name}}">
-    </div>
-
-    <div class="form-group">
-      <label>Artist name</label>
-      <input type="text" name="artist" class="form-control" value="{{attributes.artist}}">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" value="{{attributes.name}}">
     </div>
 
     <div class="form-group">
-      <label>Price</label>
-      <input type="text" name="price" class="form-control" value="{{attributes.price}}">
+        <label>Artist name</label>
+        <input type="text" name="artist" class="form-control" value="{{attributes.artist}}">
     </div>
 
     <div class="form-group">
-      <label>Location</label>
-      <input type="text" name="location" class="form-control" value="{{attributes.location}}">
-    </div>
-      
-      <div class="form-group">
-      <input type="hidden" name="publisher" class="text" value="{{attributes.publisher}}">
-    </div>
-      
-      <div class="form-group">
-      <label>Height</label>
-      <input type="text" name="height" class="form-control" value="{{attributes.height}}">
-    </div>
-      
-      <div class="form-group">
-      <label>Width</label>
-      <input type="text" name="width" class="form-control" value="{{attributes.width}}">
-    </div>
-      
-      <div class="form-group">
-      <label>Image</label>
-      <input type="text" name="image" class="form-control" value="Download image option!!!">
+        <label>Price</label>
+        <input type="text" name="price" class="form-control" value="{{attributes.price}}">
     </div>
 
     <div class="form-group">
-      <button type="submit" class="btn btn-primary">Lisää</button>
+        <label>Location</label>
+        <input type="text" name="location" class="form-control" value="{{attributes.location}}">
     </div>
-  </form>
+
+    <div class="form-group">
+        <input type="hidden" name="publisher" class="text" value="{{attributes.publisher}}">
+    </div>
+
+    <div class="form-group">
+        <label>Height</label>
+        <input type="text" name="height" class="form-control" value="{{attributes.height}}">
+    </div>
+
+    <div class="form-group">
+        <label>Width</label>
+        <input type="text" name="width" class="form-control" value="{{attributes.width}}">
+    </div>
+
+    <div class="form-group">
+        <label>Category</label>
+        <select class="form-control" name="categories">
+            {% for category in categories %}
+            <option value="{{category.name}}">{{category.name}}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Image</label>
+        <input type="text" name="image" class="form-control" value="Download image option!!!">
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Lisää</button>
+    </div>
+</form>
 {% endblock %}

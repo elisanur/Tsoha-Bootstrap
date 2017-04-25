@@ -48,7 +48,8 @@ class PosterController extends BaseController {
     }
 
     public static function create() {
-        View::make('new_poster.html');
+        $categories = Category::all();
+        View::make('new_poster.html', array('categories' => $categories));
     }
 
     public static function editPoster($id) {

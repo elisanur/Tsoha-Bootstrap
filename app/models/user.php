@@ -84,7 +84,6 @@ class User extends BaseModel {
         $top = array();
         
         foreach ($rows as $row) {
-            Kint::dump($row);
             
             $top[] = array(
                 'publisher' => User::find($row['publisher']),

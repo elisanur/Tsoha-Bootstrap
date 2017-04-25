@@ -21,7 +21,6 @@ class AccountController extends BaseController {
 
     public static function topSellers() {
         $users = User::topSellers();
-        Kint::dump($users);
         View::make('home.html', array('topSellers' => $users));
     }
 
