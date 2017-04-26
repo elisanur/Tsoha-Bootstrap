@@ -34,6 +34,54 @@ class User extends BaseModel {
         }
     }
 
+    public function save() {
+        $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password, email) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password, :email) RETURNING id');
+        $query->execute(array('firstname' => $this->firstName, 'lastname' => $this->lastName, 'address' => $this->address, 'postalcode' => $this->postalCode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password, 'email' => $this->email));
+        $row = $query->fetch();
+        $this->id = $row['id'];
+    }
+
+    public function update() {
+        $query = DB::connection()->prepare('UPDATE Username SET firstname = :firstname, '
+                . 'lastname = :lastname, address = :address, postalcode = :postalcode, '
+                . 'city = :city, name = :name, password = :password, email = :email WHERE id = :id');
+        $query->execute(array('id' => $this->id, 'firstname' => $this->firstName, 'lastname' => $this->lastName,
+            'address' => $this->address, 'postalcode' => $this->postalCode,
+            'city' => $this->city, 'name' => $this->name, 'password' => $this->password, 'email' => $this->email));
+    }
+
+    public function destroy() {
+        $con = DB::connection();
+        $con->beginTransaction();
+
+        try {
+
+            $stmt = $con->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $stmt = $con->prepare('DELETE FROM Purchase WHERE username = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $posters = Poster::allFromUser($this->id);
+
+            foreach ($posters as $poster) {
+                $stmt = $con->prepare('DELETE FROM Purchase WHERE poster = :id');
+                $stmt->execute(array('id' => $poster->id));
+            }
+
+            $stmt = $con->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $stmt = $con->prepare('DELETE FROM Username u WHERE u.id = :id');
+            $stmt->execute(array('id' => $this->id));
+
+            $con->commit();
+        } catch (PDOException $ex) {
+            $con->rollBack();
+            die($ex);
+        }
+    }
+
     public static function find($user_id) {
         $query = DB::connection()->prepare('SELECT * FROM Username WHERE id = :id LIMIT 1');
         $query->execute(array('id' => $user_id));
@@ -60,6 +108,29 @@ class User extends BaseModel {
     public static function findByEmail($email) {
         $query = DB::connection()->prepare('SELECT * FROM Username WHERE email = :email LIMIT 1');
         $query->execute(array('email' => $email));
+        $row = $query->fetch();
+
+        if ($row) {
+            $user = new User(array(
+                'id' => $row['id'],
+                'firstName' => $row['firstname'],
+                'lastName' => $row['lastname'],
+                'address' => $row['address'],
+                'postalCode' => $row['postalcode'],
+                'city' => $row['city'],
+                'name' => $row['name'],
+                'password' => $row['password'],
+                'email' => $row['email']
+            ));
+
+            return $user;
+        }
+        return null;
+    }
+
+    public static function findByUsername($username) {
+        $query = DB::connection()->prepare('SELECT * FROM Username WHERE name = :name LIMIT 1');
+        $query->execute(array('name' => $username));
         $row = $query->fetch();
 
         if ($row) {
@@ -120,56 +191,51 @@ class User extends BaseModel {
         return $top;
     }
 
-    public function save() {
-        $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password, email) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password, :email) RETURNING id');
-        $query->execute(array('firstname' => $this->firstName, 'lastname' => $this->lastName, 'address' => $this->address, 'postalcode' => $this->postalCode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password, 'email' => $this->email));
-        $row = $query->fetch();
-        $this->id = $row['id'];
-    }
+    public static function sales() {
+        $userId = BaseController::get_user_logged_in_id();
+        $query = DB::connection()->prepare('SELECT Purchase.poster FROM Purchase, Poster '
+                . 'WHERE Poster.id = Purchase.poster AND poster.publisher = :username');
+        $query->execute(array('username' => $userId));
+        $rows = $query->fetchAll();
 
-    public function update() {
-        $query = DB::connection()->prepare('UPDATE Username SET firstname = :firstname, '
-                . 'lastname = :lastname, address = :address, postalcode = :postalcode, '
-                . 'city = :city, name = :name, password = :password, email = :email WHERE id = :id');
-        $query->execute(array('id' => $this->id, 'firstname' => $this->firstName, 'lastname' => $this->lastName,
-            'address' => $this->address, 'postalcode' => $this->postalCode,
-            'city' => $this->city, 'name' => $this->name, 'password' => $this->password, 'email' => $this->email));
-    }
+        $posters = array();
 
-    public function destroy() {
-        $con = DB::connection();
-        $con->beginTransaction();
-
-        try {
-
-            $stmt = $con->prepare('DELETE FROM PosterCategory pc USING Poster p, Username u WHERE u.id=p.publisher AND p.id=pc.poster AND u.id = :id');
-            $stmt->execute(array('id' => $this->id));
-
-            $stmt = $con->prepare('DELETE FROM Purchase WHERE username = :id');
-            $stmt->execute(array('id' => $this->id));
-
-            $posters = Poster::allFromUser($this->id);
-
-            foreach ($posters as $poster) {
-                $stmt = $con->prepare('DELETE FROM Purchase WHERE poster = :id');
-                $stmt->execute(array('id' => $poster->id));
-            }
-
-            $stmt = $con->prepare('DELETE FROM Poster p USING Username u WHERE u.id=p.publisher AND u.id = :id');
-            $stmt->execute(array('id' => $this->id));
-
-            $stmt = $con->prepare('DELETE FROM Username u WHERE u.id = :id');
-            $stmt->execute(array('id' => $this->id));
-
-            $con->commit();
-        } catch (PDOException $ex) {
-            $con->rollBack();
-            die($ex);
+        foreach ($rows as $row) {           
+            $poster = Poster::find($row['poster']);
+            $posters[] = $poster;
         }
+
+        return $posters;
+    }
+
+    public static function orders() {
+        $userId = BaseController::get_user_logged_in_id();
+        $query = DB::connection()->prepare('SELECT * FROM Purchase '
+                . 'WHERE username = :username');
+        $query->execute(array('username' => $userId));
+        $rows = $query->fetchAll();
+        
+        $posters = array();
+
+        foreach ($rows as $row) {           
+            $poster = Poster::find($row['poster']);
+            $posters[] = $poster;
+        }
+
+        return $posters;
     }
 
     public function validate_username() {
-        return parent::validate_string_length('Username', $this->name, 5);
+        $errors = array();
+        $errors = parent::validate_string_length('Username', $this->name, 5);
+
+        $old = self::findByUsername($this->name);
+
+        if ($old) {
+            $errors[] = 'Username is already in use';
+        }
+
+        return $errors;
     }
 
     public function validate_firstName() {

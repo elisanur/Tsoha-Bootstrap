@@ -8,12 +8,16 @@
 
 class AccountController extends BaseController {
 
-    public static function myPosters() {
-        $user = self::get_user_logged_in();
-        $posters = Poster::allFromUser($user->id);
-        View::make('user/account.html', array('posters' => $posters));
+    public static function sales(){
+        $sales = User::sales();
+        View::make('user/sales.html', array('sales' => $sales));
     }
-
+    
+    public static function orders(){
+        $orders = User::orders();
+        View::make('user/orders.html', array('orders' => $orders));
+    }
+      
     public static function allUsers() {
         $users = User::all();
         View::make('user/users.html', array('users' => $users));
@@ -33,33 +37,6 @@ class AccountController extends BaseController {
         View::make('user/edit_account.html', array('attributes' => $user));
     }
 
-    public static function shoppingBag() {
-        $posters = array();
-
-        if ($_SESSION['shoppingBag']) {
-            foreach ($_SESSION['shoppingBag'] as $posterId) {
-                if (Poster::find($posterId)) {
-                    $posters[] = Poster::find($posterId);
-                }
-            }
-            View::make('user/shopping_bag.html', array('shoppingBag' => $posters));
-        } else {
-            Redirect::to('/', array('message' => 'Log in first to see your shopping bag!'));
-        }
-    }
-
-    public static function removeFromShoppingBag() {
-        $params = $_POST;
-        unset($_SESSION['shoppingBag'][$params['posterId']]);
-        Redirect::to('/shopping_bag');
-    }
-
-    public static function addToShoppingBag() {
-        $params = $_POST;
-        $_SESSION['shoppingBag'][$params['posterId']] = $params['posterId'];
-        Redirect::to('/shopping_bag');
-    }
-
     public static function update() {
         $id = self::get_user_logged_in()->id;
 
@@ -76,16 +53,16 @@ class AccountController extends BaseController {
             'password' => $params['password'],
             'email' => $params['email']
         );
-        
+
         $user = new User($attributes);
         $errors = $user->errors();
-        
+
         if (!$errors) {
             $user->update();
             Redirect::to('/account', array('message' => 'Account information has been edited!'));
         } else {
             View::make('user/edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
-        } 
+        }
     }
 
     public static function destroy() {
@@ -126,7 +103,7 @@ class AccountController extends BaseController {
         if (count($errors) == 0) {
             $user->save();
             $_SESSION['user'] = $user->id;
-            Redirect::to('/account/' . $user->id, array('message' => 'User created successfully!'));
+            Redirect::to('/account', array('message' => 'User created successfully!'));
         } else {
             View::make('user/register.html', array('errors' => $errors, 'attributes' => $attributes));
         }
@@ -151,6 +128,33 @@ class AccountController extends BaseController {
     public static function logout() {
         $_SESSION['user'] = null;
         Redirect::to('/login', array('message' => 'Olet kirjautunut ulos!'));
+    }
+
+    public static function shoppingBag() {
+        $posters = array();
+
+        if ($_SESSION['shoppingBag']) {
+            foreach ($_SESSION['shoppingBag'] as $posterId) {
+                if (Poster::find($posterId)) {
+                    $posters[] = Poster::find($posterId);
+                }
+            }
+            View::make('user/shopping_bag.html', array('shoppingBag' => $posters));
+        } else {
+            Redirect::to('/', array('message' => 'Log in first to see your shopping bag!'));
+        }
+    }
+
+    public static function removeFromShoppingBag() {
+        $params = $_POST;
+        unset($_SESSION['shoppingBag'][$params['posterId']]);
+        Redirect::to('/shopping_bag');
+    }
+
+    public static function addToShoppingBag() {
+        $params = $_POST;
+        $_SESSION['shoppingBag'][$params['posterId']] = $params['posterId'];
+        Redirect::to('/shopping_bag');
     }
 
 }

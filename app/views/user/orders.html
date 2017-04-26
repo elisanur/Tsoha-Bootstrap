@@ -1,15 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
 
-<p><a href="{{base_path}}/edit_account">My account information</a></p>
-<p><a href="{{base_path}}/orders">My orders</a></p>
-<p><a href="{{base_path}}/sales">My sales</a></p>
-
-<h1>My posters</h1>
-
-<p>
-    <a href="{{base_path}}/account/new_poster" class="btn btn-success">Add a poster</a>
-</p>
+<h1>My orders</h1>
 
 <table class="table table-striped table-bordered">
     <thead>
@@ -23,16 +15,12 @@
             <th>Height (cm)</th>
             <th>Width (cm)</th>
             <th>Category</th>
-            <th></th>
         </tr>
     </thead>
 
     <tbody>
 
-        {% for poster in posters %}
-
-        {% if poster.sold %}
-        {% else %}
+        {% for poster in orders %}
 
         <tr>
             <td>{{poster.image}}</td>
@@ -43,12 +31,9 @@
             <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</a></td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
-            <td></td>
-            <th><a class="btn btn-default btn-sm" href="{{base_path}}/posters/{{poster.id}}">Edit poster</a></th> 
+            <td></td> 
         </tr>
 
-
-        {% endif %}
         {% endfor %}
         
     </tbody>

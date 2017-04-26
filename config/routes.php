@@ -5,6 +5,13 @@
 $routes->get('/', function() {
     AccountController::topSellers();
 });
+$routes->get('/orders', function() {
+    AccountController::orders();
+});
+
+$routes->get('/sales', function() {
+    AccountController::sales();
+});
 
 $routes->post('/shopping_bag/remove', function() {
     AccountController::removeFromShoppingBag();
@@ -18,16 +25,8 @@ $routes->get('/shopping_bag', function() {
     AccountController::shoppingBag();
 });
 
-$routes->get('/account', function() {
-    AccountController::myPosters();
-});
-
 $routes->get('/users', function() {
     AccountController::allUsers();
-});
-
-$routes->get('/users_posters/:id', function($id) {
-    PosterController::usersPosters($id);
 });
 
 $routes->post('/edit_account/destroy', function() {
@@ -64,6 +63,14 @@ $routes->post('/register', function() {
 
 
 // poster related
+
+$routes->get('/users_posters/:id', function($id) {
+    PosterController::usersPosters($id);
+});
+
+$routes->get('/account', function() {
+    PosterController::userLoggedInPosters();
+});
 
 $routes->post('/edit_poster/:id/destroy', function($id) {
     PosterController::destroy($id);

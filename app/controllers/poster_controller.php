@@ -19,6 +19,12 @@ class PosterController extends BaseController {
         $posters = Poster::allFromUser($id);
         View::make('poster/users_posters.html', array('posters' => $posters));
     }
+    
+    public static function userLoggedInPosters() {
+        $user = self::get_user_logged_in();
+        $posters = Poster::allFromUser($user->id);
+        View::make('user/account.html', array('posters' => $posters));
+    }
 
     public static function store() {
         $params = $_POST;
