@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<p class="text-center">SHOPPING BAG</p>
-<p class="text-center">This is your shopping bag</p>
 
+{% if shoppingBag %}
+
+<p class="text-center">SHOPPING BAG</p>
 
 <h1>Posters</h1>
 
@@ -23,7 +24,6 @@
     </thead>
 
     <tbody>
-        {% if shoppingBag %}
         {% for poster in shoppingBag %}
 
         <tr>
@@ -36,12 +36,19 @@
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
             <td></td>
-            <th><a href="{{base_path}}/" class="btn btn-success">Remove</a></th>
+            <th><form method="post" action="{{base_path}}/shopping_bag/remove">
+                    <input type="hidden" name="posterId" value="{{poster.id}}" />
+                    <button type="submit" class="btn btn-default btn-sm">Remove</button></form></th>
         </tr>
         {% endfor %}
-        {% endif %}
+
     </tbody>
 </table>
 
+{% else %}
+
+<p class="text-center">Your Shopping Bag is empty</p>
+
+{% endif %}
 
 {% endblock %}

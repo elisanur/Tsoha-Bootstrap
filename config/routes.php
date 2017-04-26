@@ -6,8 +6,6 @@ $routes->get('/', function() {
     AccountController::topSellers();
 });
 
-
-
 $routes->post('/shopping_bag/remove', function() {
     AccountController::removeFromShoppingBag();
 });

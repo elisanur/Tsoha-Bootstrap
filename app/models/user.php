@@ -5,12 +5,11 @@
 
 class User extends BaseModel {
 
-    public $id, $firstName, $lastName, $address, $postalCode, $city, $name, $password, $shoppingBag;
+    public $id, $firstName, $lastName, $address, $postalCode, $city, $name, $password, $email;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_username');
-        $this->shoppingBag = array();
+        $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_username', 'validate_email');
     }
 
     public static function authenticate($username, $pass) {
@@ -26,7 +25,8 @@ class User extends BaseModel {
                 'postalCode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
-                'password' => $row['password']
+                'password' => $row['password'],
+                'email' => $row['email']
             ));
             return $user;
         } else {
@@ -48,7 +48,31 @@ class User extends BaseModel {
                 'postalCode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
-                'password' => $row['password']
+                'password' => $row['password'],
+                'email' => $row['email']
+            ));
+
+            return $user;
+        }
+        return null;
+    }
+
+    public static function findByEmail($email) {
+        $query = DB::connection()->prepare('SELECT * FROM Username WHERE email = :email LIMIT 1');
+        $query->execute(array('email' => $email));
+        $row = $query->fetch();
+
+        if ($row) {
+            $user = new User(array(
+                'id' => $row['id'],
+                'firstName' => $row['firstname'],
+                'lastName' => $row['lastname'],
+                'address' => $row['address'],
+                'postalCode' => $row['postalcode'],
+                'city' => $row['city'],
+                'name' => $row['name'],
+                'password' => $row['password'],
+                'email' => $row['email']
             ));
 
             return $user;
@@ -71,7 +95,8 @@ class User extends BaseModel {
                 'postalCode' => $row['postalcode'],
                 'city' => $row['city'],
                 'name' => $row['name'],
-                'password' => $row['password']
+                'password' => $row['password'],
+                'email' => $row['email']
             ));
         }
 
@@ -96,8 +121,8 @@ class User extends BaseModel {
     }
 
     public function save() {
-        $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password) RETURNING id');
-        $query->execute(array('firstname' => $this->firstName, 'lastname' => $this->lastName, 'address' => $this->address, 'postalcode' => $this->postalCode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
+        $query = DB::connection()->prepare('INSERT INTO Username(firstname, lastname, address, postalcode, city, name, password, email) VALUES (:firstname, :lastname, :address, :postalcode, :city, :name, :password, :email) RETURNING id');
+        $query->execute(array('firstname' => $this->firstName, 'lastname' => $this->lastName, 'address' => $this->address, 'postalcode' => $this->postalCode, 'city' => $this->city, 'name' => $this->name, 'password' => $this->password, 'email' => $this->email));
         $row = $query->fetch();
         $this->id = $row['id'];
     }
@@ -105,10 +130,10 @@ class User extends BaseModel {
     public function update() {
         $query = DB::connection()->prepare('UPDATE Username SET firstname = :firstname, '
                 . 'lastname = :lastname, address = :address, postalcode = :postalcode, '
-                . 'city = :city, name = :name, password = :password WHERE id = :id');
+                . 'city = :city, name = :name, password = :password, email = :email WHERE id = :id');
         $query->execute(array('id' => $this->id, 'firstname' => $this->firstName, 'lastname' => $this->lastName,
             'address' => $this->address, 'postalcode' => $this->postalCode,
-            'city' => $this->city, 'name' => $this->name, 'password' => $this->password));
+            'city' => $this->city, 'name' => $this->name, 'password' => $this->password, 'email' => $this->email));
     }
 
     public function destroy() {
@@ -143,26 +168,6 @@ class User extends BaseModel {
         }
     }
 
-    public function removeFromShoppingBag($poster) {
-        if ($this->shoppingBag) {
-            try {
-                unset($this->shoppingBag[$poster]);
-            } catch (Exception $ex) {
-                
-            }
-        }
-    }
-
-    public function addToShoppingBag($poster) {
-        if ($this->shoppingBag && $poster) {
-            try {
-                array_push($this->shoppingBag, $poster);
-            } catch (Exception $ex) {
-                
-            }
-        }
-    }
-
     public function validate_username() {
         return parent::validate_string_length('Username', $this->name, 5);
     }
@@ -189,6 +194,27 @@ class User extends BaseModel {
 
     public function validate_city() {
         return parent::validate_string_length('City', $this->city, 2);
+    }
+
+    public function validate_email() {
+        $errors = array();
+
+        $old = BaseController::get_user_logged_in();
+        $person = self::findByEmail($this->email);
+
+        if (!$old) {
+            if ($person) {
+                $errors[] = 'Email address is already in use!';
+            }
+        } elseif ($person && $old->email != $this->email) {
+            $errors[] = 'Email address is already in use!';
+        }
+
+        if (filter_var($this->email, FILTER_VALIDATE_EMAIL) == FALSE) {
+            $errors[] = 'Email address is faulty!';
+        }
+
+        return $errors;
     }
 
 }

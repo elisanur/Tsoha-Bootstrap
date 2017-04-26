@@ -32,27 +32,32 @@ class AccountController extends BaseController {
         $user = self::get_user_logged_in();
         View::make('user/edit_account.html', array('attributes' => $user));
     }
-    
+
     public static function shoppingBag() {
-        $user = self::get_user_logged_in();    
-        Kint::dump($user);
-        View::make('user/shopping_bag.html', array('shoppingBag'=>$user->shoppingBag));
+        $posters = array();
+
+        if ($_SESSION['shoppingBag']) {
+            foreach ($_SESSION['shoppingBag'] as $posterId) {
+                if (Poster::find($posterId)) {
+                    $posters[] = Poster::find($posterId);
+                }
+            }
+            View::make('user/shopping_bag.html', array('shoppingBag' => $posters));
+        } else {
+            Redirect::to('/', array('message' => 'Log in first to see your shopping bag!'));
+        }
     }
-    
-    public static function removeFromShoppingBag(){
-        $user = self::get_user_logged_in();
+
+    public static function removeFromShoppingBag() {
         $params = $_POST;
-        $poster = Poster::find($params['posterId']);
-        $user->removeFromShoppingBag($poster);
-        View::make('user/shopping_bag.html', array($user->shoppingBag));
+        unset($_SESSION['shoppingBag'][$params['posterId']]);
+        Redirect::to('/shopping_bag');
     }
-    
+
     public static function addToShoppingBag() {
-        $user = self::get_user_logged_in();
         $params = $_POST;
-        $poster = Poster::find($params['posterId']);
-        $user->addToShoppingBag($poster);
-        View::make('user/shopping_bag.html', array($user->shoppingBag));
+        $_SESSION['shoppingBag'][$params['posterId']] = $params['posterId'];
+        Redirect::to('/shopping_bag');
     }
 
     public static function update() {
@@ -62,25 +67,25 @@ class AccountController extends BaseController {
 
         $attributes = array(
             'id' => $id,
-            'firstname' => $params['firstname'],
-            'lastname' => $params['lastname'],
+            'firstName' => $params['firstName'],
+            'lastName' => $params['lastName'],
             'address' => $params['address'],
-            'postalcode' => $params['postalcode'],
+            'postalCode' => $params['postalCode'],
             'city' => $params['city'],
             'name' => $params['name'],
-            'password' => $params['password']
+            'password' => $params['password'],
+            'email' => $params['email']
         );
-
+        
         $user = new User($attributes);
         $errors = $user->errors();
-
-        if (count($errors) > 0) {
-            View::make('user/edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
-        } else {
+        
+        if (!$errors) {
             $user->update();
-
             Redirect::to('/account', array('message' => 'Account information has been edited!'));
-        }
+        } else {
+            View::make('user/edit_account.html', array('errors' => $errors, 'attributes' => $attributes));
+        } 
     }
 
     public static function destroy() {
@@ -103,13 +108,14 @@ class AccountController extends BaseController {
         $params = $_POST;
 
         $attributes = array(
-            'firstname' => $params['firstname'],
-            'lastname' => $params['lastname'],
+            'firstName' => $params['firstName'],
+            'lastName' => $params['lastName'],
             'address' => $params['address'],
-            'postalcode' => $params['postalcode'],
+            'postalCode' => $params['postalCode'],
             'city' => $params['city'],
             'name' => $params['name'],
-            'password' => $params['password']
+            'password' => $params['password'],
+            'email' => $params['email']
         );
 
         Kint::dump($params);
@@ -135,6 +141,8 @@ class AccountController extends BaseController {
             View::make('login.html', array('error' => 'Väärä käyttäjätunnus tai salasana!', 'username' => $params['username']));
         } else {
             $_SESSION['user'] = $user->id;
+            $shoppingBag = array();
+            $_SESSION['shoppingBag'] = $shoppingBag;
 
             Redirect::to('/', array('message' => 'Tervetuloa takaisin ' . $user->name . '!'));
         }

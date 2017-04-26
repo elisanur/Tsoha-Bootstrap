@@ -5,7 +5,8 @@ address varchar(50) NOT NULL,
 postalcode varchar(5) NOT NULL,
 city varchar(50) NOT NULL,
 name varchar(20) NOT NULL,
-password varchar(20) NOT NULL);
+password varchar(20) NOT NULL,
+email varchar(500) UNIQUE NOT NULL);
 
 CREATE TABLE Poster(id SERIAL PRIMARY KEY,
 name varchar(50) NOT NULL,
