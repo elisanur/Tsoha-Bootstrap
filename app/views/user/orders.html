@@ -31,7 +31,11 @@
             <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</a></td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
-            <td></td> 
+            <td>
+                {% for category in poster.categories %}
+                <mark>{{category.name}}</mark> 
+                {% endfor %}
+            </td>
         </tr>
 
         {% endfor %}

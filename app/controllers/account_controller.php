@@ -115,7 +115,7 @@ class AccountController extends BaseController {
         $user = User::authenticate($params['username'], $params['password']);
 
         if (!$user) {
-            View::make('login.html', array('error' => 'Väärä käyttäjätunnus tai salasana!', 'username' => $params['username']));
+            View::make('user/login.html', array('error' => 'Väärä käyttäjätunnus tai salasana!', 'username' => $params['username']));
         } else {
             $_SESSION['user'] = $user->id;
             $shoppingBag = array();
@@ -140,6 +140,8 @@ class AccountController extends BaseController {
                 }
             }
             View::make('user/shopping_bag.html', array('shoppingBag' => $posters));
+        } else if (self::check_logged_in()) {
+            View::make('user/shopping_bag.html', message('Your shopping bag is empty!'));
         } else {
             Redirect::to('/', array('message' => 'Log in first to see your shopping bag!'));
         }
@@ -155,6 +157,10 @@ class AccountController extends BaseController {
         $params = $_POST;
         $_SESSION['shoppingBag'][$params['posterId']] = $params['posterId'];
         Redirect::to('/shopping_bag');
+    }
+    
+    public static function order(){
+        
     }
 
 }

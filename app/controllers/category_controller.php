@@ -28,7 +28,9 @@ class CategoryController extends BaseController {
 
     public static function show($id) {
         $category = Category::find($id);
-        View::make('category/show.html', array('category' => $category));
+        $posters = Poster::findPostersByCategory($category->name);
+        View::make('category/show.html', array('category' => $category, 'posters' => $posters));
     }
+    
 
 }

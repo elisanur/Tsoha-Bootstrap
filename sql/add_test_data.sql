@@ -1,14 +1,14 @@
 INSERT INTO Username( firstname, lastname, address, postalcode, city, name,
  password, email) VALUES ('Make', 'Makkonen', 'Pengerkatu 5 A 5', '00150',
- 'Helsinki', 'makemies', 'makeonjees', 'nurmi.elisa@gmail.com');
+ 'Helsinki', 'makemies', 'makeonjees', 'esimerkki.kayttaja@gmail.com');
 
 INSERT INTO Username( firstname, lastname, address, postalcode, city, name,
  password, email) VALUES ('Liisa', 'Laatu', 'Pengerkatu 6 A 8', '00150',
- 'Espoo', 'laatunainen', 'laadullaonväliä', 'elisa.nurmi@me.com');
+ 'Espoo', 'laatunainen', 'laadullaonväliä', 'esimerkki.kayttaja@me.com');
 
 INSERT INTO Username( firstname, lastname, address, postalcode, city, name,
  password, email) VALUES ('Make', 'Mikkonen', 'Alkonkatu 4 B 12', '00160',
- 'Helsinki', 'mikkonen', 'mikkonen12', 'elisa.nurmi@helsinki.fi');
+ 'Helsinki', 'mikkonen', 'mikkonen12', 'esimerkki.kayttaja@helsinki.fi');
 
 INSERT INTO Poster (name, publisher, artist, price, location, height, width) 
 VALUES ('Eye', 1, 'Make Makkonen', 23, 'Helsinki', 50, 40);

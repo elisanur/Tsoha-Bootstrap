@@ -41,10 +41,44 @@ class Category extends BaseModel {
         $this->name = $row['name'];
     }
 
+    public static function posterCategories($posterid) {
+        $query = DB::connection()->prepare('SELECT * FROM PosterCategory WHERE poster = :poster');
+        $query->execute(array('poster' => $posterid));
+        $rows = $query->fetchAll();
+        $categories = array();
+
+        foreach ($rows as $row) {
+            $categories[] = new Category(array(
+                'name' => $row['category'],
+            ));
+        }
+
+        return $categories;
+    }
+
     public function validate_name() {
         $errors = array();
         $errors[] = parent::validate_string_length('Name', $this->name, 4);
         return $errors;
     }
 
+    public static function savePosterCategory($posterId, $category) {
+        //tarkista ensin onko kategoria olemassa!!
+
+
+
+        $query = DB::connection()->prepare('INSERT INTO PosterCategory (category, poster) '
+                . 'VALUES (:category, :poster)');
+        $query->execute(array('category' => $category, 'poster' => $posterId));
+    }
+    
+    public static function destroyPosterCategory($posterId) {
+        
+        $query = DB::connection()->prepare('DELETE FROM PosterCategory '
+                . 'WHERE poster = :posterid');
+        $query->execute(array('posterid' => $posterId));
+        
+    }
+
+    
 }

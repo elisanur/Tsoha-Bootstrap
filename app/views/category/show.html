@@ -1,8 +1,54 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>{{category.name}}</h1>
-  <p> Posters jou </p>
+<h1 class="text-primary">{{category.name}}</h1>
 
 
- 
+{% if posters %}
+
+<h1>Posters</h1>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Artist</th>
+            <th>Price (€)</th>
+            <th>Location</th>
+            <th>Publisher</th>
+            <th>Height (cm)</th>
+            <th>Width (cm)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for poster in posters %}
+
+        {% if poster.sold %}
+        {% else %}
+
+        <tr>
+            <td>{{poster.image}}</td>
+            <td><a href="{{base_path}}/posters/{{poster.id}}">{{poster.name}}</td>
+            <td>{{poster.artist}}</td>
+            <td>{{poster.price}}</td>
+            <td>{{poster.location}}</td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</td>
+            <td>{{poster.height}}</td>
+            <td>{{poster.width}}</td>       
+        </tr>
+
+        {% endif %}
+
+        {% endfor %}
+    </tbody>
+</table>
+
+{% else %}
+
+<p> There is no posters linked to this category </p>
+
+{% endif %}
+
 {% endblock %}

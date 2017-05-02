@@ -15,7 +15,10 @@
             <th>Height (cm)</th>
             <th>Width (cm)</th>
             <th>Category</th>
+
+            {% if user_logged_in %}
             <th></th>
+            {% endif %}
         </tr>
     </thead>
 
@@ -35,12 +38,22 @@
             <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
-            <td></td>
-            
+
+
+            <td>
+                {% for category in poster.categories|slice(0,5) %}
+                {{category.name}}, 
+                {% endfor %}
+            </td>
+
+            {% if user_logged_in %}
             <th><form method="post" action="{{base_path}}/shopping_bag/add">
                     <input type="hidden" name="posterId" value="{{poster.id}}" />
                     <button type="submit" class="btn btn-default btn-sm">Add to shopping bag</button></form></th>
+            {% endif %}        
+
         </tr>
+
         {% endif %}
 
         {% endfor %}

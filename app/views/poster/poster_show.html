@@ -39,6 +39,7 @@
             <th>Publisher</th>
             <th>Height (cm)</th>
             <th>Width (cm)</th>
+            <th>Category</th>
         </tr>
     </thead>
 
@@ -47,19 +48,27 @@
             <td>{{poster.artist}}</td>
             <td>{{poster.price}}</td>
             <td>{{poster.location}}</td>
-            <td><a href="{{base_path}}/account/{{poster.publisher}}">{{poster.publishername}}</a></td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</a></td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
+            <td>
+                {% for category in poster.categories %}
+                <mark class="text-info">{{category.name}}</mark> 
+                {% endfor %}
+            </td>
         </tr>
     </tbody>
 </table>
 <p>
-    <a href="{{base_path}}/shopping_bag/add/{{poster.id}}" class="btn btn-success">Add to shopping bag</a>
     
-    {% if user_logged_in_id == poster.publisher %}
+    {% if user_logged_in.id is same as(poster.publisher) %}
     
     <a href="{{base_path}}/edit_poster/{{poster.id}}" class="btn btn-primary">Edit</a>
     {{forms.destroy_button("#{base_path}/edit_poster/#{poster.id}/destroy")}}
+    
+    {% else %}
+    
+    <a href="{{base_path}}/shopping_bag/add/{{poster.id}}" class="btn btn-success">Add to shopping bag</a>
     
     {% endif %}
     

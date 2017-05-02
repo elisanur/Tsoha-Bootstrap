@@ -1,5 +1,9 @@
 <?php
 
+function check_logged_in(){
+    BaseController::check_logged_in();
+}
+
 // account related
 
 $routes->get('/', function() {
@@ -13,6 +17,11 @@ $routes->get('/sales', function() {
     AccountController::sales();
 });
 
+
+$routes->get('/shopping_bag', function() {
+    AccountController::shoppingBag();
+});
+
 $routes->post('/shopping_bag/remove', function() {
     AccountController::removeFromShoppingBag();
 });
@@ -21,9 +30,7 @@ $routes->post('/shopping_bag/add', function() {
     AccountController::addToShoppingBag();
 });
 
-$routes->get('/shopping_bag', function() {
-    AccountController::shoppingBag();
-});
+
 
 $routes->get('/users', function() {
     AccountController::allUsers();
