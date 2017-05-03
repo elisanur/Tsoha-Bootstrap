@@ -2,7 +2,7 @@
 {% block content %}
 <h1>Add a new poster to sell</h1>
 
-<form method="post" action="{{base_path}}/account/new_poster">
+<form method="post" action="{{base_path}}/account/new_poster" enctype="multipart/form-data">
 
     <div class="form-group">
         <label>Category</label>
@@ -54,7 +54,8 @@
 
             <div class="form-group">
                 <label>Image</label>
-                <input type="text" name="image" class="form-control" value="Download image option!!!">
+                <p>Allowed file formats: .png, .jpg, .jpeg, .gif and .bmp</p>
+                <input type="file" name="image" class="form-control"/>
             </div>
 
             <div class="form-group">

@@ -6,11 +6,13 @@
 class Poster extends BaseModel {
 
     public $id, $name, $publisher, $artist, $price, $location, $height, $width,
-            $image, $sold, $publishername, $categories;
+            $image, $sold, $publishername, $categories, $fileType;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validate_artist', 'validate_height', 'validate_location', 'validate_name', 'validate_price', 'validate_width');
+        $this->validators = array('validate_artist', 'validate_height', 
+            'validate_location', 'validate_name', 'validate_price', 
+            'validate_width', 'validate_fileType');
     }
 
     public static function all() {
@@ -44,29 +46,6 @@ class Poster extends BaseModel {
         }
 
         return $posters;
-    }
-
-    public static function addImage() {
-        include("image.php");
-        $filetosave = "HPIM0551.JPG";
-// file to save in the database
-        $loId = addImage($conn, $filetosave);
-        $id_Desc = $filetosave;
-        $fsize = filesize("HPIM0551.JPG");
-        $sql = "INSERT INTO images(name,value,filesize) VALUES('$id_Desc','$loId','$fsize')";
-        pg_query($sql);
-    }
-
-    public static function findImage($posterId) {
-        include("image.php");
-        $sql = "Select value,name,filesize FROM images";
-        $res = Query($conn, $sql);
-        $dir = "C:\\images\\"; // directory
-        while (Fetch($res)) {
-            if (Cell($res, 2)) {
-                WriteImageToFile(Cell($res, 0), $dir . Cell($res, 1), Cell($res, 2));
-            }
-        }
     }
 
     public static function allFromUser($publisher) {
@@ -104,15 +83,7 @@ class Poster extends BaseModel {
     }
 
     public static function find($id) {
-        $query = DB::connection()->prepare('SELECT p.id AS id, '
-                . 'p.name AS name, p.publisher as publisher,'
-                . 'p.artist AS artist, p.price as price, '
-                . 'p.location AS location, p.height AS height,'
-                . 'p.width AS width, p.image AS image, '
-                . 'p.sold AS sold, u.name AS publishername '
-                . 'FROM Poster p, Username u, PosterCategory pc '
-                . 'WHERE p.publisher=u.id AND pc.poster=p.id '
-                . 'AND p.id = :id LIMIT 1');
+        $query = DB::connection()->prepare('SELECT p.id AS id, p.name AS name, p.publisher as publisher, p.artist AS artist, p.price as price, p.location AS location, p.height AS height, p.width AS width, p.image AS image, p.sold AS sold, u.name AS publishername FROM Poster p, Username u, PosterCategory pc WHERE p.publisher=u.id AND pc.poster=p.id AND p.id = :id');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
 
@@ -151,6 +122,7 @@ class Poster extends BaseModel {
                 . 'AND pc.category = :category');
         $query->execute(array('category' => $category));
         $rows = $query->fetchAll();
+        
         $posters = array();
 
         foreach ($rows as $row) {
@@ -176,13 +148,15 @@ class Poster extends BaseModel {
 
     public function save() {
         $query = DB::connection()->prepare('INSERT INTO Poster '
-                . '(name, publisher, artist, price, location, height, width) '
+                . '(name, publisher, artist, price, location, height, width, image, filetype) '
                 . 'VALUES (:name, :publisher, :artist, :price, :location, '
-                . ':height, :width) RETURNING id');
+                . ':height, :width, :image, :filetype) RETURNING id');
+        
         $query->execute(array('name' => $this->name, 'publisher' => $this->publisher,
             'artist' => $this->artist, 'price' => $this->price,
             'location' => $this->location, 'height' => $this->height,
-            'width' => $this->width));
+            'width' => $this->width, 'image' => $this->image, 'filetype' => $this->fileType));
+        
         $row = $query->fetch();
         $this->id = $row['id'];
     }
@@ -191,9 +165,16 @@ class Poster extends BaseModel {
         $query = DB::connection()->prepare('UPDATE Poster SET name = :name, '
                 . 'artist = :artist, price = :price, location = :location, '
                 . 'height = :height, width = :width WHERE id = :id');
+        
         $query->execute(array('name' => $this->name, 'artist' => $this->artist,
             'price' => $this->price, 'location' => $this->location,
             'height' => $this->height, 'width' => $this->width, 'id' => $this->id));
+    }
+    
+    public static function markAsSold($id){
+        $query = DB::connection()->prepare('UPDATE Poster SET sold = TRUE WHERE id = :id');
+        
+        $query->execute(array('id' => $this->id));
     }
 
     public function destroy() {
@@ -229,6 +210,19 @@ class Poster extends BaseModel {
 
     public function validate_price() {
         return parent::validate_whole_number('Price', $this->price);
+    }
+    
+    public function validate_fileType() {
+        $errors = array();
+        
+        $fileTypes = array('image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp');
+        
+        if (!in_array($this->fileType, $fileTypes)) {
+            $errors[] = "Image upload failed, file format not accepted. Allowed formats: ".implode(', ',$fileTypes);
+        }
+        
+        
+        return $errors;
     }
 
 }

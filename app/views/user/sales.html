@@ -22,7 +22,7 @@
         {% for poster in sales %}
 
         <tr>
-            <td>{{poster.image}}</td>
+            <td><img height="200" src="{{base_path}}/image/{{poster.id}}"/></td>
             <td><a href="{{base_path}}/posters/{{poster.id}}">{{poster.name}}</a></td>
             <td>{{poster.artist}}</td>
             <td>{{poster.price}}</td>

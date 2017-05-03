@@ -132,18 +132,15 @@ class AccountController extends BaseController {
 
     public static function shoppingBag() {
         $posters = array();
+        
 
-        if ($_SESSION['shoppingBag']) {
+        if (isset($_SESSION['shoppingBag'])) {
             foreach ($_SESSION['shoppingBag'] as $posterId) {
                 if (Poster::find($posterId)) {
                     $posters[] = Poster::find($posterId);
                 }
             }
             View::make('user/shopping_bag.html', array('shoppingBag' => $posters));
-        } else if (self::check_logged_in()) {
-            View::make('user/shopping_bag.html', message('Your shopping bag is empty!'));
-        } else {
-            Redirect::to('/', array('message' => 'Log in first to see your shopping bag!'));
         }
     }
 
@@ -159,8 +156,13 @@ class AccountController extends BaseController {
         Redirect::to('/shopping_bag');
     }
     
-    public static function order(){
-        
+    public static function makeOrder(){
+        if (isset($_SESSION['shoppingBag'])) {
+            foreach ($_SESSION['shoppingBag'] as $posterId) {
+                if (Poster::find($posterId)) {
+                    Poster::markAsSold($posterId);
+                }
+            }
+        }
     }
-
 }

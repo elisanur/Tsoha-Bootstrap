@@ -31,7 +31,19 @@ class PosterController extends BaseController {
         $params = $_POST;
         $publisher = self::get_user_logged_in_id();
 
-        $categories = $params['categories'];
+        $categories = array();
+
+        if (isset($params['categories'])) {
+            $categories = $params['categories'];
+        }
+
+        $image = $_FILES['image'];
+
+        $error = array();
+
+        if ($image['size'] == 0) {
+            $error[] = 'Image upload failed';
+        }
 
         $attributes = array(
             'name' => $params['name'],
@@ -41,91 +53,29 @@ class PosterController extends BaseController {
             'location' => $params['location'],
             'height' => $params['height'],
             'width' => $params['width'],
-            'image' => $params['image'],
+            'image' => base64_encode(file_get_contents($image["tmp_name"])),
+            'fileType' => $image[strtolower("type")],
             'categories' => array()
         );
 
+        $poster = new Poster($attributes);
+
         foreach ($categories as $category) {
             $attributes['categories'][] = $category;
-            Category::savePosterCategory($publisher, $category);
+            Category::savePosterCategory($poster->id, $category);
         }
 
-        $poster = new Poster($attributes);
         $errors = $poster->errors();
+        $errors = array_merge($errors, $error);
+
+        $categories = Category::all();
 
         if (count($errors) == 0) {
             $poster->save();
             Redirect::to('/account', array('message' => 'Poster was added!'));
         } else {
-            View::make('poster/new_poster.html', array('errors' => $errors, 'attributes' => $attributes));
+            View::make('poster/new_poster.html', array('errors' => $errors, 'attributes' => $attributes, 'categories' => $categories));
         }
-    }
-
-    public static function addImage($conn, $filename) {
-// Open and read the file that was uploaded
-        $fp = fopen($filename, "r");
-        if ($fp == false)
-            echo "Error opening file";
-// Begin a PostgreSQL transaction
-        pg_exec("begin");
-
-// create the large object and get the lo id
-        $lo_id = pg_locreate();
-
-// have postgresql open the large object for writing
-        $lo_fp = pg_loopen($lo_id, "w");
-
-// for ever 8192 bytes of the uploaded file
-        while ($nbytes = fread($fp, 8192)) {
-
-// write to the large object
-            $tmp = pg_lowrite($lo_fp, $nbytes);
-
-// handle possible error
-            if ($tmp < $nbytes) {
-                echo "error while writing large object";
-            }
-        }
-
-// close the large object
-        pg_loclose($lo_fp);
-
-// commit the postgresql transaction
-        pg_exec("commit");
-
-// close the uploaded file
-        fclose($fp);
-
-
-        if (!is_int($lo_id)) {
-// return false
-            return false;
-        }
-
-        if (is_int($lo_id)) {
-// return large object id
-            return $lo_id;
-        }
-    }
-
-    public static function ReadImage($lo_id, $filesize) {
-        pg_exec("begin");
-
-        $handle = pg_lo_open($lo_id, "r");
-        $data = pg_lo_read($handle, $filesize);
-//pg_lo_close($lo_fp);
-//pg_exec($conn,"commit");
-        return $data;
-    }
-
-    public static function WriteImageToFile($id, $filename, $filesize) {
-        $data = ReadImage($id, $filesize);
-        $f = fopen($filename, "w");
-        if (fwrite($f, $data) == FALSE) {
-            $message = 'ERROR';
-//getTokenValue("CANT_WRITE_FILE",$lang)."dbresource.txt";
-        }
-        fclose($f);
     }
 
     public static function create() {
@@ -134,16 +84,24 @@ class PosterController extends BaseController {
     }
 
     public static function editPoster($id) {
+
+
         $poster = Poster::find($id);
+
+
         $categories = Category::all();
+
         $posterCategories = Category::posterCategories($id);
+
         $posterCategoryNames = array();
 
         foreach ($posterCategories as $category) {
             $posterCategoryNames[] = $category->name;
         }
 
+
         $userid = $poster->publisher;
+
         if ($userid == parent::get_user_logged_in_id()) {
             View::make('poster/edit_poster.html', array('attributes' => $poster, 'categories' => $categories, 'posterCategoryNames' => $posterCategoryNames));
         } else {
@@ -182,8 +140,19 @@ class PosterController extends BaseController {
         $poster = new Poster($attributes);
         $errors = $poster->errors();
 
+
+
         if (count($errors) > 0) {
-            View::make('poster/edit_poster.html', array('errors' => $errors, 'attributes' => $attributes));
+            $categories = Category::all();
+            $posterCategories = Category::posterCategories($id);
+
+            $posterCategoryNames = array();
+
+            foreach ($posterCategories as $category) {
+                $posterCategoryNames[] = $category->name;
+            }
+
+            View::make('poster/edit_poster.html', array('errors' => $errors, 'attributes' => $attributes, 'categories' => $categories, 'posterCategoryNames' => $posterCategoryNames));
         } else {
             $poster->update();
 

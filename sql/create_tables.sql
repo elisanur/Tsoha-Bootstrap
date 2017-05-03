@@ -16,8 +16,8 @@ price INTEGER NOT NULL,
 location varchar(50) NOT NULL, 
 height INTEGER NOT NULL,
 width INTEGER NOT NULL,
-image OID,
-filesize BIGINT,
+image text,
+filetype varchar(50),
 sold boolean DEFAULT FALSE);
 
 CREATE TABLE Category(name varchar(20) PRIMARY KEY);

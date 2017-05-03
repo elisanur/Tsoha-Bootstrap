@@ -9,24 +9,30 @@ function check_logged_in(){
 $routes->get('/', function() {
     AccountController::topSellers();
 });
-$routes->get('/orders', function() {
+$routes->get('/orders', 'check_logged_in', function() {
     AccountController::orders();
 });
 
-$routes->get('/sales', function() {
+$routes->post('/order', 'check_logged_in', function() {
+
+    
+    
+});
+
+$routes->get('/sales', 'check_logged_in', function() {
     AccountController::sales();
 });
 
 
-$routes->get('/shopping_bag', function() {
+$routes->get('/shopping_bag', 'check_logged_in', function() {
     AccountController::shoppingBag();
 });
 
-$routes->post('/shopping_bag/remove', function() {
+$routes->post('/shopping_bag/remove', 'check_logged_in', function() {
     AccountController::removeFromShoppingBag();
 });
 
-$routes->post('/shopping_bag/add', function() {
+$routes->post('/shopping_bag/add', 'check_logged_in', function() {
     AccountController::addToShoppingBag();
 });
 
@@ -36,15 +42,15 @@ $routes->get('/users', function() {
     AccountController::allUsers();
 });
 
-$routes->post('/edit_account/destroy', function() {
+$routes->post('/edit_account/destroy', 'check_logged_in', function() {
     AccountController::destroy();
 });
 
-$routes->get('/edit_account', function() {
+$routes->get('/edit_account', 'check_logged_in', function() {
     AccountController::editAccount();
 });
 
-$routes->post('/edit_account', function() {
+$routes->post('/edit_account', 'check_logged_in', function() {
     AccountController::update();
 });
 
@@ -75,19 +81,19 @@ $routes->get('/users_posters/:id', function($id) {
     PosterController::usersPosters($id);
 });
 
-$routes->get('/account', function() {
+$routes->get('/account', 'check_logged_in', function() {
     PosterController::userLoggedInPosters();
 });
 
-$routes->post('/edit_poster/:id/destroy', function($id) {
+$routes->post('/edit_poster/:id/destroy', 'check_logged_in', function($id) {
     PosterController::destroy($id);
 });
 
-$routes->get('/edit_poster/:id', function($id) {
+$routes->get('/edit_poster/:id', 'check_logged_in', function($id) {
     PosterController::editPoster($id);
 });
 
-$routes->post('/edit_poster/:id', function($id) {
+$routes->post('/edit_poster/:id', 'check_logged_in', function($id) {
     PosterController::update($id);
 });
 
@@ -99,11 +105,11 @@ $routes->get('/posters', function() {
     PosterController::posters();
 });
 
-$routes->get('/account/new_poster', function() {
+$routes->get('/account/new_poster', 'check_logged_in', function() {
     PosterController::create();
 });
 
-$routes->post('/account/new_poster', function() {
+$routes->post('/account/new_poster', 'check_logged_in', function() {
     PosterController::store();
 });
 
@@ -113,12 +119,17 @@ $routes->post('/account/new_poster', function() {
 $routes->get('/categories', function(){
     CategoryController::listAll();
 });
-$routes->post('/category', function(){
+$routes->post('/category', 'check_logged_in', function(){
     CategoryController::store();
 });
-$routes->get('/category/new', function() {
+$routes->get('/category/new', 'check_logged_in', function() {
     CategoryController::create();
 });
 $routes->get('/category/:id', function($id){
     CategoryController::show($id);
+});
+
+//Image
+$routes->get('/image/:id', function($id) {
+    ImageController::showImage($id);
 });
