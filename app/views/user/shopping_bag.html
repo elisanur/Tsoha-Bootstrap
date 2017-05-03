@@ -49,7 +49,9 @@
     </tbody>
 </table>
 
-<p><a href="{{base_path}}/order" class="btn btn-success" data-confirm="Confirm order">Make an order</a></p>
+<p><form method="post" action="{{base_path}}/order" style="display: inline-block;" class="destroy-form" data-confirm="Confirm order">
+                    <input type="hidden"/>
+                    <button type="submit" class="btn btn-default btn-sm">Make an order</button></form></p>
 
 {% else %}
 

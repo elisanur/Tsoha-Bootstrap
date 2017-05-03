@@ -12,7 +12,10 @@ class CategoryController extends BaseController {
         $attributes = array(
             'name' => $params['name'],
         );
+        $category = strtolower($category);
+        
         $category = new Category($attributes);
+        
         $errors = $category->errors();
         if (count($errors) == 0) {
             $category->save();
@@ -26,8 +29,8 @@ class CategoryController extends BaseController {
         View::make('category/new.html');
     }
 
-    public static function show($id) {
-        $category = Category::find($id);
+    public static function show($name) {
+        $category = Category::find($name);
         $posters = Poster::findPostersByCategory($category->name);
         View::make('category/show.html', array('category' => $category, 'posters' => $posters));
     }

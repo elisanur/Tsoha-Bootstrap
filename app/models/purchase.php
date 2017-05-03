@@ -27,6 +27,7 @@ class Purchase extends BaseModel {
         $query = DB::connection()->prepare('SELECT * FROM Purchase WHERE id = :id LIMIT 1');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
+        $purchase = array();
         if ($row) {
             $purchase = new Purchase(array(
                 'id' => $row['id'],
@@ -37,11 +38,19 @@ class Purchase extends BaseModel {
         return $purchase;
     }
 
-    public function save() {
-        $query = DB::connection()->prepare('INSERT INTO Category (name) VALUES (:name) RETURNING name');
-        $query->execute(array('name' => $this->name));
+    public static function save($poster, $user) {
+        $query = DB::connection()->prepare('INSERT INTO Purchase (poster, username) VALUES (:poster, :username) RETURNING id');
+        $query->execute(array('poster' => $poster, 'username' => $user));
         $row = $query->fetch();
-        $this->name = $row['name'];
+        $purchase = array();
+        if ($row) {
+            $purchase = new Purchase(array(
+                'id' => $row['id'],
+                'posterId' => $poster,
+                'userId' => $user
+            ));
+        }
+        return $purchase;
     }
 
     public function validate_name() {

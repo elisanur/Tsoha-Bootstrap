@@ -11,6 +11,15 @@
     <a href="{{base_path}}/account/new_poster" class="btn btn-success">Add a poster</a>
 </p>
 
+<h2>Unsold posters</h2>
+
+{% if posters is empty %}
+
+<p>No unsold posters</p>
+<p></p>
+
+{% else %}
+
 <table class="table table-striped table-bordered">
     <thead>
         <tr>
@@ -31,8 +40,56 @@
 
         {% for poster in posters %}
 
-        {% if poster.sold %}
-        {% else %}
+        <tr>
+            <td><img height="200" src="{{base_path}}/image/{{poster.id}}"/></td>
+            <td>{{poster.name}}</td>
+            <td>{{poster.artist}}</td>
+            <td>{{poster.price}}</td>
+            <td>{{poster.location}}</td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publisherName}}</a></td>
+            <td>{{poster.height}}</td>
+            <td>{{poster.width}}</td>
+            <td>
+                {% for category in poster.categories|slice(0,5) %}
+                {{category.name}} 
+                {% endfor %}
+            </td>
+            <th><a class="btn btn-default btn-sm" href="{{base_path}}/edit_poster/{{poster.id}}">Edit poster</a></th> 
+        </tr>
+
+        {% endfor %}
+        
+    </tbody>
+</table>
+
+{% endif %} 
+
+{% if soldPosters is empty %}
+
+<p>No sold posters</p>
+<p></p>
+
+{% else %}
+
+<h2>Sold posters</h2>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Artist</th>
+            <th>Price (€)</th>
+            <th>Location</th>
+            <th>Publisher</th>
+            <th>Height (cm)</th>
+            <th>Width (cm)</th>
+            <th>Category</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        {% for poster in soldPosters %}
 
         <tr>
             <td><img height="200" src="{{base_path}}/image/{{poster.id}}"/></td>
@@ -40,18 +97,21 @@
             <td>{{poster.artist}}</td>
             <td>{{poster.price}}</td>
             <td>{{poster.location}}</td>
-            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</a></td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publisherName}}</a></td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
-            <td></td>
-            <th><a class="btn btn-default btn-sm" href="{{base_path}}/edit_poster/{{poster.id}}">Edit poster</a></th> 
+            <td>
+                {% for category in poster.categories|slice(0,5) %}
+                {{category.name}} 
+                {% endfor %}
+            </td>
         </tr>
 
-
-        {% endif %}
         {% endfor %}
         
     </tbody>
 </table>
+
+{% endif %}
 
 {% endblock %}

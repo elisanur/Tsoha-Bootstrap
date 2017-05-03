@@ -62,7 +62,7 @@ class User extends BaseModel {
             $stmt = $con->prepare('DELETE FROM Purchase WHERE username = :id');
             $stmt->execute(array('id' => $this->id));
 
-            $posters = Poster::allFromUser($this->id);
+            $posters = Poster::allUnsoldPostersFromUser($this->id);
 
             foreach ($posters as $poster) {
                 $stmt = $con->prepare('DELETE FROM Purchase WHERE poster = :id');
@@ -194,7 +194,7 @@ class User extends BaseModel {
     public static function sales() {
         $userId = BaseController::get_user_logged_in_id();
         $query = DB::connection()->prepare('SELECT Purchase.poster FROM Purchase, Poster '
-                . 'WHERE Poster.id = Purchase.poster AND poster.publisher = :username');
+                . 'WHERE Poster.id = Purchase.poster AND poster.publisher = :username ORDER BY Purchase.id DESC');
         $query->execute(array('username' => $userId));
         $rows = $query->fetchAll();
 
@@ -211,7 +211,7 @@ class User extends BaseModel {
     public static function orders() {
         $userId = BaseController::get_user_logged_in_id();
         $query = DB::connection()->prepare('SELECT * FROM Purchase '
-                . 'WHERE username = :username');
+                . 'WHERE username = :username ORDER BY Purchase.id DESC');
         $query->execute(array('username' => $userId));
         $rows = $query->fetchAll();
         

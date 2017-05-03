@@ -1,6 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 
+{% if posters is empty %}
+
+<p class="text-center">Unfortunately no one is selling posters at the moment</p>
+
+{% else %}
+
 <h1>Posters</h1>
 
 <table class="table table-striped table-bordered">
@@ -35,7 +41,7 @@
             <td>{{poster.artist}}</td>
             <td>{{poster.price}}</td>
             <td>{{poster.location}}</td>
-            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publisherName}}</td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
 
@@ -59,5 +65,7 @@
         {% endfor %}
     </tbody>
 </table>
+
+{% endif %}
 
 {% endblock %}

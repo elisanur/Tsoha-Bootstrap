@@ -3,7 +3,11 @@
 <h1 class="text-primary">{{category.name}}</h1>
 
 
-{% if posters %}
+{% if posters is empty %}
+
+<p> There is no posters linked to this category </p>
+
+{% else %}
 
 <h1>Posters</h1>
 
@@ -44,10 +48,6 @@
         {% endfor %}
     </tbody>
 </table>
-
-{% else %}
-
-<p> There is no posters linked to this category </p>
 
 {% endif %}
 

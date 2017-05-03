@@ -157,12 +157,21 @@ class AccountController extends BaseController {
     }
     
     public static function makeOrder(){
+        
         if (isset($_SESSION['shoppingBag'])) {
             foreach ($_SESSION['shoppingBag'] as $posterId) {
                 if (Poster::find($posterId)) {
                     Poster::markAsSold($posterId);
+                    Purchase::save($posterId, self::get_user_logged_in_id());
                 }
             }
+            
+            unset($_SESSION['shoppingBag']);
+            $_SESSION['shoppingBag'] = array();
+            
+            Redirect::to('/orders', array('message' => 'Order succesful! Contact seller(s) via email, and agree with terms of delivery.'));
+        } else {
+            View::make('user/orders.html', array('error' => 'Something weird happened, please try again.'));
         }
     }
 }

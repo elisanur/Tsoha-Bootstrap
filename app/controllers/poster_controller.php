@@ -6,25 +6,30 @@
 class PosterController extends BaseController {
 
     public static function posters() {
-        $posters = Poster::all();
+        $posters = Poster::allUnsoldPosters();
 
         View::make('poster/posters.html', array('posters' => $posters));
     }
 
     public static function posterShow($id) {
+        Kint::dump($id);
+        settype($id, "integer");
         $poster = Poster::find($id);
+        Kint::dump($poster);
         View::make('poster/poster_show.html', array('poster' => $poster));
     }
 
     public static function usersPosters($id) {
-        $posters = Poster::allFromUser($id);
-        View::make('poster/users_posters.html', array('posters' => $posters));
+        $user = User::find($id);
+        $posters = Poster::allUnsoldPostersFromUser($id);
+        View::make('poster/users_posters.html', array('posters' => $posters, 'user' => $user->name));
     }
 
     public static function userLoggedInPosters() {
         $user = self::get_user_logged_in();
-        $posters = Poster::allFromUser($user->id);
-        View::make('user/account.html', array('posters' => $posters));
+        $posters = Poster::allUnsoldPostersFromUser($user->id);
+        $soldPosters = Poster::allSoldPostersFromUser($user->id);
+        View::make('user/account.html', array('posters' => $posters, 'soldPosters' => $soldPosters));
     }
 
     public static function store() {
@@ -36,6 +41,7 @@ class PosterController extends BaseController {
         if (isset($params['categories'])) {
             $categories = $params['categories'];
         }
+        Kint::dump($categories);
 
         $image = $_FILES['image'];
 
@@ -44,6 +50,8 @@ class PosterController extends BaseController {
         if ($image['size'] == 0) {
             $error[] = 'Image upload failed';
         }
+        
+        
 
         $attributes = array(
             'name' => $params['name'],
@@ -68,12 +76,13 @@ class PosterController extends BaseController {
         $errors = $poster->errors();
         $errors = array_merge($errors, $error);
 
-        $categories = Category::all();
+        
 
         if (count($errors) == 0) {
             $poster->save();
             Redirect::to('/account', array('message' => 'Poster was added!'));
         } else {
+            $categories = Category::all();
             View::make('poster/new_poster.html', array('errors' => $errors, 'attributes' => $attributes, 'categories' => $categories));
         }
     }
@@ -129,7 +138,7 @@ class PosterController extends BaseController {
         $posterCategories = Category::posterCategories($id);
 
         foreach ($posterCategories as $posterCategory) {
-            Category::destroyPosterCategory($id);
+            Category::destroyPosterCategoryByPosterId($id);
         }
 
         foreach ($categories as $category) {

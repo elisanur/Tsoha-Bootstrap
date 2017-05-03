@@ -14,9 +14,7 @@ $routes->get('/orders', 'check_logged_in', function() {
 });
 
 $routes->post('/order', 'check_logged_in', function() {
-
-    
-    
+    AccountController::makeOrder();
 });
 
 $routes->get('/sales', 'check_logged_in', function() {
@@ -35,8 +33,6 @@ $routes->post('/shopping_bag/remove', 'check_logged_in', function() {
 $routes->post('/shopping_bag/add', 'check_logged_in', function() {
     AccountController::addToShoppingBag();
 });
-
-
 
 $routes->get('/users', function() {
     AccountController::allUsers();
@@ -125,8 +121,8 @@ $routes->post('/category', 'check_logged_in', function(){
 $routes->get('/category/new', 'check_logged_in', function() {
     CategoryController::create();
 });
-$routes->get('/category/:id', function($id){
-    CategoryController::show($id);
+$routes->get('/category/:name', function($name){
+    CategoryController::show($name);
 });
 
 //Image

@@ -15,6 +15,7 @@
             <th>Height (cm)</th>
             <th>Width (cm)</th>
             <th>Category</th>
+            <th class="text-danger">Seller's contact information</th>
         </tr>
     </thead>
 
@@ -36,6 +37,7 @@
                 <mark>{{category.name}}</mark> 
                 {% endfor %}
             </td>
+            <td>{{poster.publisherEmail}}</td>
         </tr>
 
         {% endfor %}

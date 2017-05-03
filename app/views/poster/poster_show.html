@@ -39,7 +39,7 @@
             <td>{{poster.artist}}</td>
             <td>{{poster.price}}</td>
             <td>{{poster.location}}</td>
-            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publishername}}</a></td>
+            <td><a href="{{base_path}}/users_posters/{{poster.publisher}}">{{poster.publisherName}}</a></td>
             <td>{{poster.height}}</td>
             <td>{{poster.width}}</td>
             <td>
@@ -52,6 +52,8 @@
 </table>
 <p>
     
+    {% if poster.sold == FALSE %}
+    
     {% if user_logged_in.id is same as(poster.publisher) %}
     
     <a href="{{base_path}}/edit_poster/{{poster.id}}" class="btn btn-primary">Edit</a>
@@ -59,7 +61,11 @@
     
     {% else %}
     
-    <a href="{{base_path}}/shopping_bag/add/{{poster.id}}" class="btn btn-success">Add to shopping bag</a>
+    <form method="post" action="{{base_path}}/shopping_bag/add">
+                    <input type="hidden" name="posterId" value="{{poster.id}}" />
+                    <button type="submit" class="btn btn-success">Add to shopping bag</button></form>
+    
+    {% endif %}
     
     {% endif %}
     
