@@ -228,7 +228,7 @@ class User extends BaseModel {
     public function validate_firstName() {
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('First name', $this->firstName, 2));
+        $errors = array_merge($errors, parent::validate_string_length('First name', $this->firstName, 2, 50));
         $errors = array_merge($errors, parent::validate_characters('First name', $this->firstName));
         
         return $errors;
@@ -237,7 +237,7 @@ class User extends BaseModel {
     public function validate_lastName() {
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('Last name', $this->lastName, 2));
+        $errors = array_merge($errors, parent::validate_string_length('Last name', $this->lastName, 2, 50));
         $errors = array_merge($errors, parent::validate_characters('Last name', $this->lastName));
         
         return $errors;
@@ -246,7 +246,7 @@ class User extends BaseModel {
     public function validate_address() {      
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('Address', $this->address, 5));
+        $errors = array_merge($errors, parent::validate_string_length('Address', $this->address, 5, 50));
         
         if (preg_match("/[^A-Za-z0-9\å\ä\ö\Å\Ä\Ö\' ']/", $this->address)){
             $errors[] =  "Address contained invalid characters, only digits 0-9 and characters A-Z, Å, Ä, Ö and a-z, å, ä, ö allowed";
@@ -278,7 +278,7 @@ class User extends BaseModel {
     public function validate_city() {
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('City', $this->city, 2));
+        $errors = array_merge($errors, parent::validate_string_length('City', $this->city, 2, 50));
         $errors = array_merge($errors, parent::validate_characters('City', $this->city));
         
         return $errors;
@@ -302,6 +302,15 @@ class User extends BaseModel {
             $errors[] = 'Email address is faulty!';
         }
 
+        return $errors;
+    }
+    
+    public function validate_username() {
+        
+        $errors = array(); 
+        
+        $errors = array_merge($errors, parent::validate_string_length('Username', $this->name, 5, 20));
+        $errors = array_merge($errors, parent::validate_characters('Username', $this->name));
         return $errors;
     }
 

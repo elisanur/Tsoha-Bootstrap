@@ -1,9 +1,6 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
  */
 
 class AccountController extends BaseController {
@@ -30,14 +27,14 @@ class AccountController extends BaseController {
 
         $attributes = array(
             'id' => $id,
-            'firstName' => $params['firstName'],
-            'lastName' => $params['lastName'],
-            'address' => $params['address'],
+            'firstName' => trim($params['firstName']),
+            'lastName' => trim($params['lastName']),
+            'address' => trim($params['address']),
             'postalCode' => $params['postalCode'],
-            'city' => $params['city'],
-            'name' => $params['name'],
+            'city' => trim($params['city']),
+            'name' => trim($params['name']),
             'password' => $params['password'],
-            'email' => $params['email']
+            'email' => trim($params['email'])
         );
 
 
@@ -81,20 +78,18 @@ class AccountController extends BaseController {
         $params = $_POST;
 
         $attributes = array(
-            'firstName' => $params['firstName'],
-            'lastName' => $params['lastName'],
-            'address' => $params['address'],
+            'firstName' => trim($params['firstName']),
+            'lastName' => trim($params['lastName']),
+            'address' => trim($params['address']),
             'postalCode' => $params['postalCode'],
-            'city' => $params['city'],
+            'city' => trim($params['city']),
             'name' => $params['name'],
             'password' => $params['password'],
-            'email' => $params['email']
+            'email' => trim($params['email'])
         );
 
         $user = new User($attributes);
         $errors = $user->errors();
-
-        $errors = array_merge($errors, BaseModel::validate_string_length('Username', $params['name'], 5));
 
         $old = User::findByUsername($params['name']);
 

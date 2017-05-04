@@ -10,7 +10,7 @@ class Category extends BaseModel {
     }
 
     public static function all() {
-        $query = DB::connection()->prepare('SELECT * FROM Category');
+        $query = DB::connection()->prepare('SELECT * FROM Category ORDER BY name ASC');
         $query->execute();
         $rows = $query->fetchAll();
         $category = array();
@@ -73,7 +73,7 @@ class Category extends BaseModel {
 
     public function validate_name() {
         $errors = array();
-        $errors = array_merge($errors, parent::validate_string_length('Name', $this->name, 4));
+        $errors = array_merge($errors, parent::validate_string_length('Name', $this->name, 4, 20));
         $errors = array_merge($errors, parent::validate_characters('Name', $this->name));
 
         if (self::find($this->name)) {

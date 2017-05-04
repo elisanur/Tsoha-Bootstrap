@@ -5,26 +5,31 @@
 <form method="post" action="{{base_path}}/register"> 
     <div class="form-group">
         <label>First name</label>
+        <p>(First name should only contain characters a-ö and should be 2-50 characters long)</p>
         <input type="text" name="firstName" class="form-control" value="{{attributes.firstName}}">
     </div>
     
     <div class="form-group">
         <label>Last name</label>
+        <p>(Last name should only contain characters a-ö and should be 2-50 characters long)</p>
         <input type="text" name="lastName" class="form-control" value="{{attributes.lastName}}">
     </div>
     
     <div class="form-group">
         <label>Address</label>
+        <p>(Address should only contain characters a-ö, digits 0-9 and should be 5-50 characters long)</p>
         <input type="text" name="address" class="form-control" value="{{attributes.address}}">
     </div>
     
     <div class="form-group">
         <label>Postal code</label>
+        <p>(Postal code should only contain digits 0-9 and should be 5 digits long)</p>
         <input type="text" name="postalCode" class="form-control" value="{{attributes.postalCode}}">
     </div>
     
     <div class="form-group">
         <label>City</label>
+        <p>(City should only contain characters a-ö and should be 2-50 characters long)</p>
         <input type="text" name="city" class="form-control" value="{{attributes.city}}">
     </div>
     
@@ -35,12 +40,13 @@
     
     <div class="form-group">
         <label>Username</label>
+        <p>(Username should only contain characters a-ö and should be 5-20 characters long)</p>
         <input type="text" name="name" class="form-control" value="{{attributes.name}}">
     </div>
 
     <div class="form-group">
         <label>Password</label>
-        <p>Password should contain at least one lowercase char, one uppercase char, one digit and one special sign of @#-_$%^&+=§!?</p>
+        <p>(Password should contain at least one lowercase char, one uppercase char, one digit and one special sign of @#-_$%^&+=§!? )</p>
         <input type="password" name="password" class="form-control" value="{{attributes.password}}">
     </div>
 

@@ -223,17 +223,17 @@ class Poster extends BaseModel {
     }
 
     public function validate_height() {
-        return parent::validate_whole_number('Height', $this->height);
+        return parent::validate_whole_number('Height', $this->height, 10000);
     }
 
     public function validate_width() {
-        return parent::validate_whole_number('Width', $this->width);
+        return parent::validate_whole_number('Width', $this->width, 10000);
     }
 
     public function validate_artist() {
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('Artist', $this->artist, 5));
+        $errors = array_merge($errors, parent::validate_string_length('Artist', $this->artist, 5, 50));
         $errors = array_merge($errors, parent::validate_characters('Artist', $this->artist));
         
         return $errors;
@@ -242,7 +242,7 @@ class Poster extends BaseModel {
     public function validate_location() {
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('Location', $this->location, 2));
+        $errors = array_merge($errors, parent::validate_string_length('Location', $this->location, 2, 50));
         $errors = array_merge($errors, parent::validate_characters('Location', $this->location));
         
         return $errors;
@@ -251,14 +251,14 @@ class Poster extends BaseModel {
     public function validate_name() {
         $errors = array();
         
-        $errors = array_merge($errors, parent::validate_string_length('Name', $this->name, 3));
+        $errors = array_merge($errors, parent::validate_string_length('Name', $this->name, 3, 50));
         $errors = array_merge($errors, parent::validate_characters('Name', $this->name));
         
         return $errors;
     }
 
     public function validate_price() {
-        return parent::validate_whole_number('Price', $this->price);
+        return parent::validate_whole_number('Price', $this->price, 1000000);
     }
 
     

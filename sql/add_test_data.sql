@@ -56,6 +56,9 @@ INSERT INTO PosterCategory (category, poster) VALUES ('futurism', 2);
 INSERT INTO PosterCategory (category, poster) VALUES ('modernism', 2);
 INSERT INTO PosterCategory (category, poster) VALUES ('impressionism', 3);
 
-INSERT INTO Purchase (poster, username) VALUES (2, 1);
-INSERT INTO Purchase (poster, username) VALUES (3, 2);
-INSERT INTO Purchase (poster, username) VALUES (1, 3);
+INSERT INTO Purchase (poster, username) VALUES (4, 3);
+INSERT INTO Purchase (poster, username) VALUES (5, 3);
+INSERT INTO Purchase (poster, username) VALUES (6, 3);
+INSERT INTO Purchase (poster, username) VALUES (7, 3);
+INSERT INTO Purchase (poster, username) VALUES (8, 3);
+INSERT INTO Purchase (poster, username) VALUES (9, 3);

@@ -10,7 +10,7 @@ class CategoryController extends BaseController {
     public static function store() {
         $params = $_POST;
         $attributes = array(
-            'name' => strtolower($params['name']),
+            'name' => strtolower(trim($params['name'])),
         );
         
         $category = new Category($attributes);

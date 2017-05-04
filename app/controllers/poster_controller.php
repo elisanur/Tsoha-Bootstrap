@@ -60,6 +60,18 @@ class PosterController extends BaseController {
         }
         
         $imageData = $_FILES['image'];
+        
+        // file_get_contents hakee sisällön ja johtaa poikkeustilaan jo hakuvaiheessa, jos sisältöä ei löydy, tämän vuoksi tavalliset
+        // tarkistukset if-lauseen avulla eivät toimineet ja toistaiseksi ratkaistu try catch lauseen avulla. 
+        // Tässä tapauksessa myös $_POST array tyhjenee
+        try {
+            file_get_contents($imageData["tmp_name"]);
+        } catch (Exception $exc) {
+            $errors[] = 'Image has to be added!';
+            $categories = Category::all();
+            View::make('poster/new_poster.html', array('errors' => $errors,'categories' => $categories));
+            
+        }
 
         $image = new Image(array(
             'image' => base64_encode(file_get_contents($imageData["tmp_name"])),
@@ -70,11 +82,11 @@ class PosterController extends BaseController {
         $errors = array_merge($errors, $image->errors());
 
         $attributes = array(
-            'name' => $params['name'],
+            'name' => trim($params['name']),
             'publisher' => $publisher,
-            'artist' => $params['artist'],
+            'artist' => trim($params['artist']),
             'price' => $params['price'],
-            'location' => $params['location'],
+            'location' => trim($params['location']),
             'height' => $params['height'],
             'width' => $params['width'],
             'image' => $image,
@@ -145,10 +157,10 @@ class PosterController extends BaseController {
 
         $attributes = array(
             'id' => $id,
-            'name' => $params['name'],
-            'artist' => $params['artist'],
+            'name' => trim($params['name']),
+            'artist' => trim($params['artist']),
             'price' => $params['price'],
-            'location' => $params['location'],
+            'location' => trim($params['location']),
             'height' => $params['height'],
             'width' => $params['width'],
             'image' => $image->image,

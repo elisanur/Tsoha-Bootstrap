@@ -18,21 +18,25 @@
 
         <div class="form-group">
             <label>Name</label>
+            <p>(Name should only contain characters a-ö and should be 3-50 characters long)</p>
             <input type="text" name="name" class="form-control" value="{{attributes.name}}">
         </div>
 
         <div class="form-group">
                 <label>Artist name</label>
+                <p>(Artist name should contain only characters a-ö and should be 5-50 characters long)</<p>>
                 <input type="text" name="artist" class="form-control" value="{{attributes.artist}}">
             </div>
 
             <div class="form-group">
                 <label>Price</label>
+                <p>(Price should be a whole number and at most 1000000)</p>
                 <input type="text" name="price" class="form-control" value="{{attributes.price}}">
             </div>
 
             <div class="form-group">
                 <label>Location</label>
+                <p>(Location should only contain characters a-ö and should be 5-50 characters long)</p>
                 <input type="text" name="location" class="form-control" value="{{attributes.location}}">
             </div>
 
@@ -42,11 +46,13 @@
 
             <div class="form-group">
                 <label>Height</label>
+                <p>(Height should be a whole number and at most 10000)</p>
                 <input type="text" name="height" class="form-control" value="{{attributes.height}}">
             </div>
 
             <div class="form-group">
                 <label>Width</label>
+                <p>(Width should be a whole number and at most 10000)</p>
                 <input type="text" name="width" class="form-control" value="{{attributes.width}}">
             </div>
 
@@ -55,11 +61,12 @@
             <div class="form-group">
                 <label>Image</label>
                 <p>Allowed file formats: .png, .jpg, .jpeg, .gif and .bmp</p>
+                <p>If "Add poster" button is clicked without adding poster, the form fields will be emptied</p>
                 <input type="file" name="image" class="form-control"/>
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Lisää</button>
+                <button type="submit" class="btn btn-primary">Add poster</button>
             </div>
     </form>
     {% endblock %}
