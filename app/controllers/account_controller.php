@@ -107,6 +107,10 @@ class AccountController extends BaseController {
     }
 
     public static function handle_login() {
+        if (self::check_logged_in()){
+            Redirect::to('/');
+        }
+        
         $params = $_POST;
         $user = User::authenticate($params['username'], $params['password']);
 
