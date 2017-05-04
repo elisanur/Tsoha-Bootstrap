@@ -4,23 +4,16 @@ function check_logged_in(){
     BaseController::check_logged_in();
 }
 
-// account related
 
 $routes->get('/', function() {
-    AccountController::topSellers();
+    DefaultController::index();
 });
-$routes->get('/orders', 'check_logged_in', function() {
-    AccountController::orders();
-});
+
+// account_controller related:
 
 $routes->post('/order', 'check_logged_in', function() {
     AccountController::makeOrder();
 });
-
-$routes->get('/sales', 'check_logged_in', function() {
-    AccountController::sales();
-});
-
 
 $routes->get('/shopping_bag', 'check_logged_in', function() {
     AccountController::shoppingBag();
@@ -71,14 +64,22 @@ $routes->post('/register', function() {
 });
 
 
-// poster related
+// poster_contoller related:
+
+$routes->get('/orders', 'check_logged_in', function() {
+    PosterController::usersOrders();
+});
+
+$routes->get('/sales', 'check_logged_in', function() {
+    PosterController::usersSales();
+});
 
 $routes->get('/users_posters/:id', function($id) {
-    PosterController::usersPosters($id);
+    PosterController::usersUnsoldPosters($id);
 });
 
 $routes->get('/account', 'check_logged_in', function() {
-    PosterController::userLoggedInPosters();
+    AccountController::account();
 });
 
 $routes->post('/edit_poster/:id/destroy', 'check_logged_in', function($id) {
@@ -98,7 +99,7 @@ $routes->get('/posters/:id', function($id) {
 });
 
 $routes->get('/posters', function() {
-    PosterController::posters();
+    PosterController::unsoldPosters();
 });
 
 $routes->get('/account/new_poster', 'check_logged_in', function() {
@@ -110,7 +111,7 @@ $routes->post('/account/new_poster', 'check_logged_in', function() {
 });
 
 
-// Category related:
+// Category_controller related:
 
 $routes->get('/categories', function(){
     CategoryController::listAll();
@@ -125,7 +126,8 @@ $routes->get('/category/:name', function($name){
     CategoryController::show($name);
 });
 
-//Image
+//Image_controller related:
+
 $routes->get('/image/:id', function($id) {
     ImageController::showImage($id);
 });

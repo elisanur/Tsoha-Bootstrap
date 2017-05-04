@@ -59,14 +59,13 @@
     <a href="{{base_path}}/edit_poster/{{poster.id}}" class="btn btn-primary">Edit</a>
     {{forms.destroy_button("#{base_path}/edit_poster/#{poster.id}/destroy")}}
     
-    {% else %}
+    {% elseif user_logged_in %}
     
     <form method="post" action="{{base_path}}/shopping_bag/add">
                     <input type="hidden" name="posterId" value="{{poster.id}}" />
                     <button type="submit" class="btn btn-success">Add to shopping bag</button></form>
     
     {% endif %}
-    
     {% endif %}
     
 </p>

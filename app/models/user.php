@@ -9,7 +9,7 @@ class User extends BaseModel {
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_username', 'validate_email');
+        $this->validators = array('validate_address', 'validate_city', 'validate_firstName', 'validate_lastName', 'validate_password', 'validate_postalCode', 'validate_email');
     }
 
     public static function authenticate($username, $pass) {
@@ -225,41 +225,63 @@ class User extends BaseModel {
         return $posters;
     }
 
-    public function validate_username() {
+    public function validate_firstName() {
         $errors = array();
-        $errors = parent::validate_string_length('Username', $this->name, 5);
-
-        $old = self::findByUsername($this->name);
-
-        if ($old) {
-            $errors[] = 'Username is already in use';
-        }
-
+        
+        $errors = array_merge($errors, parent::validate_string_length('First name', $this->firstName, 2));
+        $errors = array_merge($errors, parent::validate_characters('First name', $this->firstName));
+        
         return $errors;
     }
 
-    public function validate_firstName() {
-        return parent::validate_string_length('First name', $this->firstName, 2);
-    }
-
     public function validate_lastName() {
-        return parent::validate_string_length('Last name', $this->lastName, 2);
+        $errors = array();
+        
+        $errors = array_merge($errors, parent::validate_string_length('Last name', $this->lastName, 2));
+        $errors = array_merge($errors, parent::validate_characters('Last name', $this->lastName));
+        
+        return $errors;
     }
 
-    public function validate_address() {
-        return parent::validate_string_length('Address', $this->address, 5);
+    public function validate_address() {      
+        $errors = array();
+        
+        $errors = array_merge($errors, parent::validate_string_length('Address', $this->address, 5));
+        
+        if (preg_match("/[^A-Za-z0-9\å\ä\ö\Å\Ä\Ö\' ']/", $this->address)){
+            $errors[] =  "Address contained invalid characters, only digits 0-9 and characters A-Z, Å, Ä, Ö and a-z, å, ä, ö allowed";
+        }
+     
+        return $errors;
     }
 
     public function validate_postalCode() {
-        return parent::validate_string_length_exact('Postalcode', $this->postalCode, 5);
+        $errors = array();
+          
+        $errors = array_merge($errors, parent::validate_string_length_exact('Postalcode', $this->postalCode, 5));
+        $errors = array_merge($errors, parent::validate_numeric('Postalcode', $this->postalCode));
+        
+        return $errors;
     }
 
     public function validate_password() {
-        return parent::validate_string_length('Password', $this->password, 8);
+        $errors = array();
+        
+        if (!preg_match('/^(?=.*\d)(?=.*[@#\-_$%^&+=§!\?])(?=.*[a-z])(?=.*[A-Z])[0-9A-Za-z@#\-_$%^&+=§!\?]{8,20}$/', $this->password)){
+            
+            $errors[] = 'Password should be 8-20 characters long and should contain at least one lowercase character, one uppercase character, one digit and one special sign of @#-_$%^&+=§!?';
+        }   
+        
+        return $errors;
     }
 
     public function validate_city() {
-        return parent::validate_string_length('City', $this->city, 2);
+        $errors = array();
+        
+        $errors = array_merge($errors, parent::validate_string_length('City', $this->city, 2));
+        $errors = array_merge($errors, parent::validate_characters('City', $this->city));
+        
+        return $errors;
     }
 
     public function validate_email() {

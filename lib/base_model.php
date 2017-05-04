@@ -2,16 +2,12 @@
 
 class BaseModel {
 
-    // "protected"-attribuutti on käytössä vain luokan ja sen perivien luokkien sisällä
     protected $validators;
 
     public function __construct($attributes = null) {
-        // Käydään assosiaatiolistan avaimet läpi
         
         foreach ($attributes as $attribute => $value) {
-            // Jos avaimen niminen attribuutti on olemassa...
             if (property_exists($this, $attribute)) {
-                // ... lisätään avaimen nimiseen attribuuttin siihen liittyvä arvo
                 $this->{$attribute} = $value;
             }
         }
@@ -31,7 +27,7 @@ class BaseModel {
         $string=trim($string);
         
         $errors = array();
-        if ($string == '' || $this->name == null) {
+        if ($string == '' || $string == null) {
             $errors[] = $name . ' cannot be empty';
         }
         if (strlen($string) < $length) {
@@ -70,5 +66,23 @@ class BaseModel {
 
         return $errors;
     }
-
+    
+    public function validate_numeric($name, $val){
+        $errors = array();
+        
+        if (preg_match("/[^0-9]/", $val)){
+            $errors[] =  $name." contained invalid characters, only digits 0-9 allowed";
+        }
+        
+        return $errors;
+    }
+    
+    public function validate_characters($name, $string) {
+        $errors = array();
+        
+        if (preg_match("/[^A-Za-z\å\ä\ö\Å\Ä\Ö\' ']/", $string)){
+            $errors[] =  $name." contained invalid characters, only characters A-Z, Å, Ä, Ö and a-z, å, ä, ö allowed";
+        }
+        return $errors;
+    }
 }

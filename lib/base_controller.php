@@ -6,12 +6,9 @@ class BaseController {
 
         if (isset($_SESSION['user'])) {
             $user_id = $_SESSION['user'];
-
             $user = User::find($user_id);
-
             return $user;
         }
-
 
         return null;
     }
@@ -26,12 +23,9 @@ class BaseController {
 
         if (isset($_SESSION['user'])) {
             $user_id = $_SESSION['user'];
-
             $user = User::find($user_id);
-
             return $user->id;
         }
-
 
         return null;
     }

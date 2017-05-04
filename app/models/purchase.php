@@ -52,11 +52,4 @@ class Purchase extends BaseModel {
         }
         return $purchase;
     }
-
-    public function validate_name() {
-        $errors = array();
-        $errors[] = parent::validate_string_length('Name', $this->name, 4);
-        return $errors;
-    }
-
 }

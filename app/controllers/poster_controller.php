@@ -5,31 +5,41 @@
 
 class PosterController extends BaseController {
 
-    public static function posters() {
+    public static function unsoldPosters() {
         $posters = Poster::allUnsoldPosters();
-
         View::make('poster/posters.html', array('posters' => $posters));
     }
 
     public static function posterShow($id) {
-        Kint::dump($id);
         settype($id, "integer");
         $poster = Poster::find($id);
-        Kint::dump($poster);
+
+        if ($poster == null) {
+            Redirect::to('/posters', array('message' => 'Poster not found!'));
+        }
+
         View::make('poster/poster_show.html', array('poster' => $poster));
     }
 
-    public static function usersPosters($id) {
+    public static function usersUnsoldPosters($id) {
         $user = User::find($id);
         $posters = Poster::allUnsoldPostersFromUser($id);
+
+        if (!isset($user)) {
+            Redirect::to('/users', array('message' => 'User not found!'));
+        }
+
         View::make('poster/users_posters.html', array('posters' => $posters, 'user' => $user->name));
     }
 
-    public static function userLoggedInPosters() {
-        $user = self::get_user_logged_in();
-        $posters = Poster::allUnsoldPostersFromUser($user->id);
-        $soldPosters = Poster::allSoldPostersFromUser($user->id);
-        View::make('user/account.html', array('posters' => $posters, 'soldPosters' => $soldPosters));
+    public static function usersSales() {
+        $sales = User::sales();
+        View::make('user/sales.html', array('sales' => $sales));
+    }
+
+    public static function usersOrders() {
+        $orders = User::orders();
+        View::make('user/orders.html', array('orders' => $orders));
     }
 
     public static function store() {
@@ -37,21 +47,27 @@ class PosterController extends BaseController {
         $publisher = self::get_user_logged_in_id();
 
         $categories = array();
-
         if (isset($params['categories'])) {
             $categories = $params['categories'];
         }
-        Kint::dump($categories);
 
-        $image = $_FILES['image'];
-
-        $error = array();
-
-        if ($image['size'] == 0) {
-            $error[] = 'Image upload failed';
+        $errors = array();
+        
+        //Jos kuva on liian iso, $_POST array tyhjenee.
+        if (!isset($_FILES['image'])){
+            $errors[] = 'Image size is too big';
+            View::make('poster/new_poster.html', array('errors' => $errors, 'attributes' => $params, 'categories' => Category::all())); 
         }
         
+        $imageData = $_FILES['image'];
+
+        $image = new Image(array(
+            'image' => base64_encode(file_get_contents($imageData["tmp_name"])),
+            'fileType' => $imageData[strtolower("type")], 
+            'filePath' => $imageData["tmp_name"] 
+        ));
         
+        $errors = array_merge($errors, $image->errors());
 
         $attributes = array(
             'name' => $params['name'],
@@ -61,25 +77,26 @@ class PosterController extends BaseController {
             'location' => $params['location'],
             'height' => $params['height'],
             'width' => $params['width'],
-            'image' => base64_encode(file_get_contents($image["tmp_name"])),
-            'fileType' => $image[strtolower("type")],
+            'image' => $image,
             'categories' => array()
         );
 
-        $poster = new Poster($attributes);
-
         foreach ($categories as $category) {
             $attributes['categories'][] = $category;
-            Category::savePosterCategory($poster->id, $category);
         }
 
-        $errors = $poster->errors();
-        $errors = array_merge($errors, $error);
+        $poster = new Poster($attributes);
+        $errors = array_merge($errors, $poster->errors());
 
-        
+        if ($imageData['size'] == 0) {
+            $error[] = 'Image upload failed';
+        }
 
         if (count($errors) == 0) {
             $poster->save();
+            foreach ($categories as $category) {
+                Category::savePosterCategory($poster->id, $category);
+            }
             Redirect::to('/account', array('message' => 'Poster was added!'));
         } else {
             $categories = Category::all();
@@ -93,13 +110,8 @@ class PosterController extends BaseController {
     }
 
     public static function editPoster($id) {
-
-
         $poster = Poster::find($id);
-
-
         $categories = Category::all();
-
         $posterCategories = Category::posterCategories($id);
 
         $posterCategoryNames = array();
@@ -107,7 +119,6 @@ class PosterController extends BaseController {
         foreach ($posterCategories as $category) {
             $posterCategoryNames[] = $category->name;
         }
-
 
         $userid = $poster->publisher;
 
@@ -121,8 +132,16 @@ class PosterController extends BaseController {
 
     public static function update($id) {
         $params = $_POST;
-        $categories = $params['categories'];
+
+        $categories = array();
+
+        if (isset($params['categories'])) {
+            $categories = $params['categories'];
+        }
+
         $user = parent::get_user_logged_in_id();
+
+        $image = Image::findImageByPoster($id);
 
         $attributes = array(
             'id' => $id,
@@ -132,6 +151,8 @@ class PosterController extends BaseController {
             'location' => $params['location'],
             'height' => $params['height'],
             'width' => $params['width'],
+            'image' => $image->image,
+            'fileType' => $image->fileType,
             'categories' => array()
         );
 
@@ -143,13 +164,15 @@ class PosterController extends BaseController {
 
         foreach ($categories as $category) {
             $attributes['categories'][] = $category;
-            Category::savePosterCategory($user, $category);
+        }
+        $poster = new Poster($attributes);
+
+        foreach ($categories as $category) {
+            $attributes['categories'][] = $category;
+            Category::savePosterCategory($poster->id, $category);
         }
 
-        $poster = new Poster($attributes);
         $errors = $poster->errors();
-
-
 
         if (count($errors) > 0) {
             $categories = Category::all();

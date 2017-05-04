@@ -26,7 +26,7 @@ class Category extends BaseModel {
         $query = DB::connection()->prepare('SELECT * FROM Category WHERE name = :name LIMIT 1');
         $query->execute(array('name' => $name));
         $row = $query->fetch();
-        $category=array();
+        $category = array();
         if ($row) {
             $category = new Category(array(
                 'name' => $row['name']
@@ -57,34 +57,29 @@ class Category extends BaseModel {
         return $categories;
     }
 
-    public function validate_name() {
-        $errors = array();
-        $errors[] = parent::validate_string_length('Name', $this->name, 4);
-        
-        if (self::find($this->name)){
-            $errors[] = 'Category already exists!';
-        }
-        
-        return $errors;
-    }
-
     public static function savePosterCategory($posterId, $category) {
-        
         $category = Category::find($category);
-        Kint::dump($category);
-        
+
         $query = DB::connection()->prepare('INSERT INTO PosterCategory (category, poster) '
                 . 'VALUES (:category, :poster)');
         $query->execute(array('category' => $category->name, 'poster' => $posterId));
     }
-    
+
     public static function destroyPosterCategoryByPosterId($posterId) {
-        
         $query = DB::connection()->prepare('DELETE FROM PosterCategory '
                 . 'WHERE poster = :posterid');
         $query->execute(array('posterid' => $posterId));
-        
     }
 
-    
+    public function validate_name() {
+        $errors = array();
+        $errors = array_merge($errors, parent::validate_string_length('Name', $this->name, 4));
+        $errors = array_merge($errors, parent::validate_characters('Name', $this->name));
+
+        if (self::find($this->name)) {
+            $errors[] = 'Category already exists!';
+        }
+
+        return $errors;
+    }
 }

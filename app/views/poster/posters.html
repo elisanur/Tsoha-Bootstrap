@@ -32,9 +32,6 @@
 
         {% for poster in posters %}
 
-        {% if poster.sold %}
-        {% else %}
-
         <tr>
             <td><img height="200" src="{{base_path}}/image/{{poster.id}}"/></td>
             <td><a href="{{base_path}}/posters/{{poster.id}}">{{poster.name}}</td>
@@ -48,7 +45,7 @@
 
             <td>
                 {% for category in poster.categories|slice(0,5) %}
-                {{category.name}}, 
+                {{category.name}} 
                 {% endfor %}
             </td>
 
@@ -59,8 +56,6 @@
             {% endif %}        
 
         </tr>
-
-        {% endif %}
 
         {% endfor %}
     </tbody>

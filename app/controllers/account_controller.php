@@ -8,28 +8,15 @@
 
 class AccountController extends BaseController {
 
-    public static function sales(){
-        $sales = User::sales();
-        View::make('user/sales.html', array('sales' => $sales));
+    public static function account() {
+        $user = self::get_user_logged_in();
+        $posters = Poster::allUnsoldPostersFromUser($user->id);
+        View::make('user/account.html', array('posters' => $posters));
     }
-    
-    public static function orders(){
-        $orders = User::orders();
-        View::make('user/orders.html', array('orders' => $orders));
-    }
-      
+
     public static function allUsers() {
         $users = User::all();
         View::make('user/users.html', array('users' => $users));
-    }
-
-    public static function topSellers() {
-        $users = User::topSellers();
-        View::make('home.html', array('topSellers' => $users));
-    }
-
-    public static function account() {
-        View::make('user/account.html');
     }
 
     public static function editAccount() {
@@ -39,7 +26,6 @@ class AccountController extends BaseController {
 
     public static function update() {
         $id = self::get_user_logged_in()->id;
-
         $params = $_POST;
 
         $attributes = array(
@@ -54,10 +40,21 @@ class AccountController extends BaseController {
             'email' => $params['email']
         );
 
+
+
         $user = new User($attributes);
         $errors = $user->errors();
 
-        if (!$errors) {
+        $name = $params['name'];
+        $old = BaseController::get_user_logged_in();
+        $new = User::findByUsername($name);
+
+        
+        if (isset($new) && $old->name != $name) {
+            $errors[] = 'Username is already in use';
+        }
+
+        if (count($errors) == 0) {
             $user->update();
             Redirect::to('/account', array('message' => 'Account information has been edited!'));
         } else {
@@ -81,7 +78,6 @@ class AccountController extends BaseController {
     }
 
     public static function new_user() {
-
         $params = $_POST;
 
         $attributes = array(
@@ -95,10 +91,16 @@ class AccountController extends BaseController {
             'email' => $params['email']
         );
 
-        Kint::dump($params);
-
         $user = new User($attributes);
         $errors = $user->errors();
+
+        $errors = array_merge($errors, BaseModel::validate_string_length('Username', $params['name'], 5));
+
+        $old = User::findByUsername($params['name']);
+
+        if ($old) {
+            $errors[] = 'Username is already in use';
+        }
 
         if (count($errors) == 0) {
             $user->save();
@@ -111,17 +113,16 @@ class AccountController extends BaseController {
 
     public static function handle_login() {
         $params = $_POST;
-
         $user = User::authenticate($params['username'], $params['password']);
 
         if (!$user) {
-            View::make('user/login.html', array('error' => 'Väärä käyttäjätunnus tai salasana!', 'username' => $params['username']));
+            View::make('user/login.html', array('message' => 'Invalid username or password!', 'username' => $params['username']));
         } else {
             $_SESSION['user'] = $user->id;
             $shoppingBag = array();
             $_SESSION['shoppingBag'] = $shoppingBag;
 
-            Redirect::to('/', array('message' => 'Tervetuloa takaisin ' . $user->name . '!'));
+            Redirect::to('/', array('message' => 'Welcome back ' . $user->name . '!'));
         }
     }
 
@@ -132,7 +133,6 @@ class AccountController extends BaseController {
 
     public static function shoppingBag() {
         $posters = array();
-        
 
         if (isset($_SESSION['shoppingBag'])) {
             foreach ($_SESSION['shoppingBag'] as $posterId) {
@@ -155,9 +155,8 @@ class AccountController extends BaseController {
         $_SESSION['shoppingBag'][$params['posterId']] = $params['posterId'];
         Redirect::to('/shopping_bag');
     }
-    
-    public static function makeOrder(){
-        
+
+    public static function makeOrder() {
         if (isset($_SESSION['shoppingBag'])) {
             foreach ($_SESSION['shoppingBag'] as $posterId) {
                 if (Poster::find($posterId)) {
@@ -165,13 +164,14 @@ class AccountController extends BaseController {
                     Purchase::save($posterId, self::get_user_logged_in_id());
                 }
             }
-            
+
             unset($_SESSION['shoppingBag']);
             $_SESSION['shoppingBag'] = array();
-            
+
             Redirect::to('/orders', array('message' => 'Order succesful! Contact seller(s) via email, and agree with terms of delivery.'));
         } else {
             View::make('user/orders.html', array('error' => 'Something weird happened, please try again.'));
         }
     }
+
 }

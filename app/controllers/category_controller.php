@@ -10,9 +10,8 @@ class CategoryController extends BaseController {
     public static function store() {
         $params = $_POST;
         $attributes = array(
-            'name' => $params['name'],
+            'name' => strtolower($params['name']),
         );
-        $category = strtolower($category);
         
         $category = new Category($attributes);
         
@@ -31,9 +30,13 @@ class CategoryController extends BaseController {
 
     public static function show($name) {
         $category = Category::find($name);
+        
+        if ($category == null){
+            Redirect::to('/categories', array('message' => 'Category not found!'));
+        }
+        
         $posters = Poster::findPostersByCategory($category->name);
         View::make('category/show.html', array('category' => $category, 'posters' => $posters));
     }
-    
 
 }

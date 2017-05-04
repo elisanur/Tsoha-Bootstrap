@@ -6,13 +6,13 @@
 class Poster extends BaseModel {
 
     public $id, $name, $publisher, $artist, $price, $location, $height, $width,
-            $image, $sold, $publisherName, $categories, $fileType, $publisherEmail;
+            $image, $sold, $publisherName, $categories, $publisherEmail;
 
     public function __construct($attributes) {
         parent::__construct($attributes);
-        $this->validators = array('validate_artist', 'validate_height', 
-            'validate_location', 'validate_name', 'validate_price', 
-            'validate_width', 'validate_fileType');
+        $this->validators = array('validate_artist', 'validate_height',
+            'validate_location', 'validate_name', 'validate_price',
+            'validate_width');
     }
 
     public static function allUnsoldPosters() {
@@ -38,7 +38,7 @@ class Poster extends BaseModel {
                 'location' => $row['location'],
                 'height' => $row['height'],
                 'width' => $row['width'],
-                'image' => $row['image'],
+                'image' => Image::findImageByPoster($row['id']),
                 'sold' => $row['sold'],
                 'publisherName' => $row['publishername'],
                 'categories' => Category::posterCategories($row['id'])
@@ -72,8 +72,7 @@ class Poster extends BaseModel {
                 'location' => $row['location'],
                 'height' => $row['height'],
                 'width' => $row['width'],
-                'image' => $row['image'],
-                'fileType' => $row['filetype'],
+                'image' => Image::findImageByPoster($row['id']),
                 'sold' => $row['sold'],
                 'publisherName' => $row['publishername'],
                 'categories' => Category::posterCategories($row['id'])
@@ -82,8 +81,7 @@ class Poster extends BaseModel {
 
         return $posters;
     }
-    
-    
+
     public static function allSoldPostersFromUser($publisher) {
         $query = DB::connection()->prepare('SELECT Poster.id AS id, '
                 . 'Poster.name AS name, Poster.publisher as publisher,'
@@ -108,8 +106,7 @@ class Poster extends BaseModel {
                 'location' => $row['location'],
                 'height' => $row['height'],
                 'width' => $row['width'],
-                'image' => $row['image'],
-                'fileType' => $row['filetype'],
+                'image' => Image::findImageByPoster($row['id']),
                 'sold' => $row['sold'],
                 'publisherName' => $row['publishername'],
                 'categories' => Category::posterCategories($row['id'])
@@ -118,18 +115,12 @@ class Poster extends BaseModel {
 
         return $posters;
     }
-    
 
     public static function find($id) {
-        
-        Kint::dump($id);
-        
-        $query = DB::connection()->prepare('SELECT p.id AS id, p.name AS name, p.publisher AS publisher, p.artist AS artist, p.price AS price, p.location AS location, p.height AS height, p.width AS width, p.image AS image, p.filetype AS filetype, p.sold AS sold, u.name AS publishername FROM Poster p, Username u, PosterCategory pc WHERE p.publisher=u.id AND pc.poster=p.id AND p.id = :id');
+        $query = DB::connection()->prepare(' SELECT p.id AS id, p.name AS name, p.publisher AS publisher, p.artist AS artist, p.price AS price, p.location AS location, p.height AS height, p.width AS width, p.image AS image, p.filetype AS filetype, p.sold AS sold, u.name AS publishername FROM Poster p LEFT JOIN Username u ON p.publisher=u.id LEFT JOIN PosterCategory pc ON pc.poster=p.id WHERE p.id = :id');
         $query->execute(array('id' => $id));
         $row = $query->fetch();
 
-        Kint::dump($row);
-        
         if ($row) {
             $poster = new Poster(array(
                 'id' => $row['id'],
@@ -140,8 +131,7 @@ class Poster extends BaseModel {
                 'location' => $row['location'],
                 'height' => $row['height'],
                 'width' => $row['width'],
-                'image' => $row['image'],
-                'fileType' =>$row['filetype'],
+                'image' => Image::findImageByPoster($row['id']),
                 'sold' => $row['sold'],
                 'publisherName' => $row['publishername'],
                 'publisherEmail' => User::find($row['publisher'])->email,
@@ -167,7 +157,7 @@ class Poster extends BaseModel {
                 . 'AND pc.category = :category');
         $query->execute(array('category' => $category));
         $rows = $query->fetchAll();
-        
+
         $posters = array();
 
         foreach ($rows as $row) {
@@ -181,7 +171,7 @@ class Poster extends BaseModel {
                 'location' => $row['location'],
                 'height' => $row['height'],
                 'width' => $row['width'],
-                'image' => $row['image'],
+                'image' => Image::findImageByPoster($row['id']),
                 'sold' => $row['sold'],
                 'publisherName' => $row['publishername'],
                 'categories' => Category::posterCategories($row['id'])
@@ -196,12 +186,12 @@ class Poster extends BaseModel {
                 . '(name, publisher, artist, price, location, height, width, image, filetype) '
                 . 'VALUES (:name, :publisher, :artist, :price, :location, '
                 . ':height, :width, :image, :filetype) RETURNING id');
-        
+
         $query->execute(array('name' => $this->name, 'publisher' => $this->publisher,
             'artist' => $this->artist, 'price' => $this->price,
             'location' => $this->location, 'height' => $this->height,
-            'width' => $this->width, 'image' => $this->image, 'filetype' => $this->fileType));
-        
+            'width' => $this->width, 'image' => $this->image->image, 'filetype' => $this->image->fileType));
+
         $row = $query->fetch();
         $this->id = $row['id'];
     }
@@ -210,20 +200,19 @@ class Poster extends BaseModel {
         $query = DB::connection()->prepare('UPDATE Poster SET name = :name, '
                 . 'artist = :artist, price = :price, location = :location, '
                 . 'height = :height, width = :width WHERE id = :id');
-        
+
         $query->execute(array('name' => $this->name, 'artist' => $this->artist,
             'price' => $this->price, 'location' => $this->location,
             'height' => $this->height, 'width' => $this->width, 'id' => $this->id));
     }
-    
-    public static function markAsSold($id){
+
+    public static function markAsSold($id) {
         $query = DB::connection()->prepare('UPDATE Poster SET sold = TRUE WHERE id = :id');
-        
+
         $query->execute(array('id' => $id));
     }
 
     public function destroy() {
-
         Category::destroyPosterCategoryByPosterId($this->id);
 
         $query = DB::connection()->prepare('DELETE FROM Purchase WHERE poster = :posterid');
@@ -242,32 +231,36 @@ class Poster extends BaseModel {
     }
 
     public function validate_artist() {
-        return parent::validate_string_length('Artist', $this->artist, 5);
+        $errors = array();
+        
+        $errors = array_merge($errors, parent::validate_string_length('Artist', $this->artist, 5));
+        $errors = array_merge($errors, parent::validate_characters('Artist', $this->artist));
+        
+        return $errors;
     }
 
     public function validate_location() {
-        return parent::validate_string_length('Location', $this->location, 2);
+        $errors = array();
+        
+        $errors = array_merge($errors, parent::validate_string_length('Location', $this->location, 2));
+        $errors = array_merge($errors, parent::validate_characters('Location', $this->location));
+        
+        return $errors;
     }
 
     public function validate_name() {
-        return parent::validate_string_length('Name', $this->name, 3);
+        $errors = array();
+        
+        $errors = array_merge($errors, parent::validate_string_length('Name', $this->name, 3));
+        $errors = array_merge($errors, parent::validate_characters('Name', $this->name));
+        
+        return $errors;
     }
 
     public function validate_price() {
         return parent::validate_whole_number('Price', $this->price);
     }
+
     
-    public function validate_fileType() {
-        $errors = array();
-        
-        $fileTypes = array('image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/bmp');
-        
-        if (!in_array($this->fileType, $fileTypes)) {
-            $errors[] = "Image upload failed, file format not accepted. Allowed formats: ".implode(', ',$fileTypes);
-        }
-        
-        
-        return $errors;
-    }
 
 }

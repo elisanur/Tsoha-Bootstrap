@@ -16,6 +16,5 @@ class ImageController extends BaseController {
         die();
     }
     
-    
 }
 
