@@ -107,7 +107,7 @@ class AccountController extends BaseController {
     }
 
     public static function handle_login() {
-        if (self::check_logged_in()){
+        if (parent::get_user_logged_in()){
             Redirect::to('/');
         }
         
